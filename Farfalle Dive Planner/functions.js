@@ -60,8 +60,8 @@ interact('.draggable')
       	textEl && (textEl.textContent = 'time = ' + x + '\n' +
       	 'depth = ' + y);
         //change to represent the bad dive.
-      	div.style.backgroundColor='#CC3300';
-      	div.style.backgroundImage="url('diver-octopus.gif')";
+      	event.target.style.backgroundColor='#CC3300';
+      	event.target.style.backgroundImage="url('diver-octopus.gif')";
       }
       else if(Warning_DIVE(x,y))
       {
@@ -69,8 +69,8 @@ interact('.draggable')
   	  	 textEl && (textEl.textContent = 'time = ' + x + '\n' +
       	 'depth = ' + y);
          //change to represent the warning dive
-      	 div.style.backgroundColor='#CC6600';
-      	 div.style.backgroundImage="url('animated-diver-2.gif')";
+      	 event.target.style.backgroundColor='#CC6600';
+      	 event.target.style.backgroundImage="url('animated-diver-2.gif')";
   	  }
   	  else
   	  	{
@@ -78,8 +78,8 @@ interact('.draggable')
   	  		textEl && (textEl.textContent = 'time = ' + x + '\n' +
       	 	'depth = ' + y);
           //change to represent the good dive
-      	 	div.style.backgroundColor='#339933';
-      	 	div.style.backgroundImage="url('animated-diver-2.gif')";
+      	 	event.target.style.backgroundColor='#339933';
+      	 	event.target.style.backgroundImage="url('animated-diver-2.gif')";
   	  	}
         //see comment 4 and 5 below for problems of these implementation
     }
