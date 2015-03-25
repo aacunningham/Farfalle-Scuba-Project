@@ -1,0 +1,34 @@
+
+/*
+drag-me is the id for the draggable object
+This is the starting style for the diver object, it
+will be change in the function.js depending on the status
+of dive
+*/
+#drag-me {
+  width: 100px;
+  height:100px;
+  
+
+  background-image: url("animated-diver-2.gif");
+  color: white;
+
+  border-radius: 0.75em;
+  
+  /* Don't know what these are */
+  -webkit-transform: translate(0px, 0px);
+          transform: translate(0px, 0px);
+}
+
+/*
+container is the defined draggable area that the draggable object can move
+height: 520px? because:
+       height container - height of drag-me = 420/10 which is the maximum depth in the Padi table(meters)
+width:1000px/ because: (for now)
+       width container - width of drag-me = 900/10  is the maximum time in minutes(for now).
+*/
+#container {
+   	width: 1000px;
+    height: 520px;			
+    background-image: url("background.png");
+    }
