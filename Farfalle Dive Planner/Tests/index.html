@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+        <link rel="stylesheet" href="qunit.css">
+        <script src="qunit.js"></script>
+        <script src="functions.js"></script>
+        <script>
+        QUnit.module("Bad_DIVE");
+        function b_dive (time, depth, expected) {
+            QUnit.assert.equal(Bad_DIVE(time, depth), expected);
+        }
+        QUnit.test("Depth = 10m", function(assert) {
+            b_dive(199, 10, false);
+            b_dive(218, 10, false);
+            b_dive(219, 10, true);
+            b_dive(220, 10, true);
+        });
+
+        QUnit.test("Depth = 12m", function(assert) {
+            b_dive(134, 12, false);
+            b_dive(146, 12, false);
+            b_dive(147, 12, true);
+            b_dive(151, 12, true);
+        });
+
+        QUnit.test("Depth = 14m", function(assert) {
+            b_dive(92, 14, false);
+            b_dive(97, 14, false);
+            b_dive(98, 14, true);
+            b_dive(100, 14, true);
+        });
+
+        QUnit.test("Depth = 16m", function(assert) {
+            b_dive(70, 16, false);
+            b_dive(71, 16, false);
+            b_dive(72, 16, true);
+            b_dive(75, 16, true);
+        });
+
+        QUnit.test("Depth = 18m", function(assert) {
+            b_dive(53, 18, false);
+            b_dive(55, 18, false);
+            b_dive(56, 18, true);
+            b_dive(58, 18, true);
+        });
+
+        QUnit.test("Depth = 20m", function(assert) {
+            b_dive(42, 20, false);
+            b_dive(44, 20, false);
+            b_dive(45, 20, true);
+            b_dive(47, 20, true);
+        });
+
+        QUnit.test("Depth = 22m", function(assert) {
+            b_dive(34, 22, false);
+            b_dive(36, 22, false);
+            b_dive(37, 22, true);
+            b_dive(38, 22, true);
+        });
+
+        QUnit.test("Depth = 25m", function(assert) {
+            b_dive(26, 25, false);
+            b_dive(28, 25, false);
+            b_dive(29, 25, true);
+            b_dive(30, 25, true);
+        });
+
+        QUnit.test("Depth = 30m", function(assert) {
+            b_dive(17, 30, false);
+            b_dive(19, 30, false);
+            b_dive(20, 30, true);
+            b_dive(21, 30, true);
+        });
+
+        QUnit.test("Depth = 35m", function(assert) {
+            b_dive(12, 35, false);
+            b_dive(13, 35, false);
+            b_dive(14, 35, true);
+            b_dive(15, 35, true);
+        });
+
+        QUnit.test("Depth = 40m", function(assert) {
+            b_dive(7, 40, false);
+            b_dive(8, 40, false);
+            b_dive(9, 40, true);
+            b_dive(10, 40, true);
+        });
+
+        QUnit.test("Depth = 42m", function(assert) {
+            b_dive(6, 42, false);
+            b_dive(7, 42, false);
+            b_dive(8, 42, true);
+            b_dive(9, 42, true);
+        });
+
+
+        QUnit.module("Warning_DIVE");
+        function w_dive (time, depth, expected) {
+            QUnit.assert.equal(Warning_DIVE(time, depth), expected);
+        }
+        QUnit.test("Depth = 10m", function(assert) {
+            w_dive(133, 10, false);
+            w_dive(145, 10, false);
+            w_dive(160, 10, true);
+            w_dive(178, 10, true);
+        });
+
+        QUnit.test("Depth = 12m", function(assert) {
+            w_dive(101, 12, false);
+            w_dive(108, 12, false);
+            w_dive(116, 12, true);
+            w_dive(125, 12, true);
+        });
+
+        QUnit.test("Depth = 14m", function(assert) {
+            w_dive(73, 14, false);
+            w_dive(77, 14, false);
+            w_dive(82, 14, true);
+            w_dive(87, 14, true);
+        });
+
+        QUnit.test("Depth = 16m", function(assert) {
+            w_dive(56, 16, false);
+            w_dive(60, 16, false);
+            w_dive(63, 16, true);
+            w_dive(67, 16, true);
+        });
+
+        QUnit.test("Depth = 18m", function(assert) {
+            w_dive(46, 18, false);
+            w_dive(48, 18, false);
+            w_dive(51, 18, true);
+            w_dive(53, 18, true);
+        });
+
+        QUnit.test("Depth = 20m", function(assert) {
+            w_dive(36, 20, false);
+            w_dive(38, 20, false);
+            w_dive(40, 20, true);
+            w_dive(42, 20, true);
+        });
+
+        QUnit.test("Depth = 22m", function(assert) {
+            w_dive(29, 22, false);
+            w_dive(30, 22, false);
+            w_dive(32, 22, true);
+            w_dive(34, 22, true);
+        });
+
+        QUnit.test("Depth = 25m", function(assert) {
+            w_dive(22, 25, false);
+            w_dive(23, 25, false);
+            w_dive(25, 25, true);
+            w_dive(26, 25, true);
+        });
+
+        QUnit.test("Depth = 30m", function(assert) {
+            w_dive(3, 30, true);
+            w_dive(4, 30, true);
+            w_dive(5, 30, true);
+            w_dive(6, 30, true);
+        });
+
+
+        QUnit.module("Pressure_Group");
+        function p_group (time, depth, expected) {
+            QUnit.assert.equal(Pressure_GROUP(time, depth), expected);
+        }
+        QUnit.test("Group A", function(assert) {
+            p_group(10,10,1);
+            p_group(9, 12,1);
+            p_group(8, 14,1);
+            p_group(7, 16,1);
+            p_group(6, 18,1);
+            p_group(6, 20,1);
+            p_group(5, 22,1);
+            p_group(4, 25,1);
+            p_group(3, 30,1);
+            p_group(3, 35,1);
+        });
+
+        QUnit.test("Group B", function(assert) {
+            p_group(20,10,2);
+            p_group(17,12,2);
+            p_group(15,14,2);
+            p_group(13,16,2);
+            p_group(11,18,2);
+            p_group(10,20,2);
+            p_group(9, 22,2);
+            p_group(8, 25,2);
+            p_group(6, 30,2);
+            p_group(5, 35,2);
+            p_group(5, 40,2);
+            p_group(4, 42,2);
+        });
+
+        QUnit.test("Group C", function(assert) {
+            p_group(26,10,3);
+            p_group(23,12,3);
+            p_group(19,14,3);
+            p_group(17,16,3);
+            p_group(15,18,3);
+            p_group(13,20,3);
+            p_group(12,22,3);
+            p_group(10,25,3);
+            p_group(8, 30,3);
+            p_group(7, 35,3);
+            p_group(6, 40,3);
+        });
+
+        QUnit.test("Group D", function(assert) {
+            p_group(30,10,4);
+            p_group(26,12,4);
+            p_group(22,14,4);
+            p_group(19,16,4);
+            p_group(16,18,4);
+            p_group(15,20,4);
+            p_group(13,22,4);
+            p_group(11,25,4);
+            p_group(9, 30,4);
+            p_group(8, 35,4);
+            p_group(6, 42,4);
+        });
+
+        QUnit.test("Group E", function(assert) {
+            p_group(34,10,5);
+            p_group(29,12,5);
+            p_group(24,14,5);
+            p_group(21,16,5);
+            p_group(18,18,5);
+            p_group(16,20,5);
+            p_group(15,22,5);
+            p_group(13,25,5);
+            p_group(10,30,5);
+            p_group(7, 40,5);
+            p_group(7, 42,5);
+        });
+
+        </script>
+	</head>
+	<body>
+        <div id="qunit"></div>
+	</body>
+</html>
