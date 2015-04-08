@@ -26,7 +26,7 @@ interact('.draggable')
     // call this function on every dragmove event
     onmove: function (event) 
     {
-      var div = document.getElementById('drag-me');     //for changing the element of the <div> tag
+      var div = document.getElementById('dive');     //for changing the element of the <div> tag
                                                         //see comment 4 and 5 below.
       var target = event.target,
           // keep the dragged position in the data-x/data-y attributes
@@ -47,48 +47,40 @@ interact('.draggable')
       //so the user will have enough room to drag the object or will make it easier.
       //Also the new x and y defined below will be the parameters
       //that will be use in the dive_algo functionalities.
-      x = x/10;
-      y = y/10;
+      x = Math.round(x/10);
+      y = Math.round(y/10);
       
-      //show the time = x and depth = y coordinates and status of dive for now...
-      //Possible to do: make a seperate function for setting the <div> elements
-      //     to show if it is bad,warning, or good dive?
-      //maybe it will solve problem 4 below?
+      //show the time = x and depth = y coordinates and status of dive
+      textEl && (textEl.textContent = 'time = ' + x + '\n' +
+         'depth = ' + y);
+
+      Dive_Status(event,x,y); //get the status of dive
+    }
+});
+
+function Dive_Status(event,x,y)
+{
+  
+
       if(Bad_DIVE(x,y))
       {
-        //set the textEl
-      	textEl && (textEl.textContent = 'time = ' + x + '\n' +
-      	 'depth = ' + y);
         //change to represent the bad dive.
-      	event.target.style.backgroundColor='#CC3300';
-      	event.target.style.backgroundImage="url('diver-octopus.gif')";
+        event.target.style.backgroundColor='#CC3300';
+        event.target.style.backgroundImage="url('diver-octopus.gif')";
       }
       else if(Warning_DIVE(x,y))
       {
-         //set the textEl
-  	  	 textEl && (textEl.textContent = 'time = ' + x + '\n' +
-      	 'depth = ' + y);
          //change to represent the warning dive
-      	 event.target.style.backgroundColor='#CC6600';
-      	 event.target.style.backgroundImage="url('animated-diver-2.gif')";
-  	  }
-  	  else
-  	  	{
-          //set the textEl
-  	  		textEl && (textEl.textContent = 'time = ' + x + '\n' +
-      	 	'depth = ' + y);
+         event.target.style.backgroundColor='#CC6600';
+         event.target.style.backgroundImage="url('animated-diver-2.gif')";
+      }
+      else
+        {
           //change to represent the good dive
-      	 	event.target.style.backgroundColor='#339933';
-      	 	event.target.style.backgroundImage="url('animated-diver-2.gif')";
-  	  	}
-        //see comment 4 and 5 below for problems of these implementation
-    }
-
-    //do i need onend function?
-      //--maybe not
- 
-  });
-
+          event.target.style.backgroundColor='#339933';
+          event.target.style.backgroundImage="url('animated-diver-2.gif')";
+        }
+}
 
 function Bad_DIVE(time,depth)
 {
@@ -107,12 +99,26 @@ function Warning_DIVE(time,depth)
 	return ((depth > (a*(Math.pow(time,b))))); 
 }
 
+function Add_Dive()
+{
+    var newContainer = document.createElement("div");
+    var newDive = document.createElement("div");
+    var main = document.getElementById("main");
+    newContainer.id = "container";
+    newDive.id = "dive";
+    newDive.className = "draggable";
+    newDive.innerHTML = '<strong><p></p></strong>';
+    newContainer.align = "left";
+
+    $(main).append(newContainer);     // Append new containers
+    $(newContainer).append(newDive);    // Append draggable diver to new container
+}
 
 //Future problems:
 /*
   1. interact onstart() function does not seem to work?
 
-  2. figure out how to implement multiple dives +
+  2. figure out how to implement multiple dives + done.
 
   3. surface interval. Possibly by using interact resize?
 
@@ -127,8 +133,7 @@ function Warning_DIVE(time,depth)
         and update the status of the dives.
 
   5. make a seperate function for setting the <div> elements
-    to show if it is bad,warning, or good dive?
-
+    to show if it is bc
   6. RNT functionality
 
   *that's it for now...

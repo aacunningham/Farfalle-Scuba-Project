@@ -1,15 +1,22 @@
 <!DOCTYPE HTML>
 <html>
 
-	<link rel="stylesheet" type="text/css" href="style.css">
-	<script src="interact.js"></script>
-	<script src="functions.js"></script>
+	<head>
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<script src="interact.js"></script>
+		<script src="functions.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	</head>
 
-    <div id="container">
-		<div id="drag-me" class="draggable">
-			<strong><p></p></strong>
+	<body>
+		<button onclick="Add_Dive()">Add Dive</button>
+		<div id = "main" align ="center">
+			<div id="container" align ="left">
+				<div id="dive" class="draggable">
+					<strong><p></p></strong>
+				</div>
+			</div>
 		</div>
-	</div>
-	
-
+		<button onclick="Update()">Dive</button>
+	</body>
 </html>
