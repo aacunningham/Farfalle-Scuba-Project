@@ -156,7 +156,9 @@ function Add_Dive()
     var newContainer = document.createElement("div");
     var newDive = document.createElement("div");
     var main = document.getElementById("main");
-    newContainer.id = "container";
+    var l = document.getElementsByClassName("container");
+    newContainer.id = l.length+1;
+    newContainer.className = "container";
     newDive.id = "dive";
     newDive.className = "draggable";
     newDive.innerHTML = '<strong><p></p></strong>';
