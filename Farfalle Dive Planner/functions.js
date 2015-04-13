@@ -26,8 +26,7 @@ interact('.draggable')
     // call this function on every dragmove event
     onmove: function (event) 
     {
-      var div = document.getElementById('dive');     //for changing the element of the <div> tag
-                                                        //see comment 4 and 5 below.
+      var dive = document.getElementsByClassName("draggable dive");
       var target = event.target,
           // keep the dragged position in the data-x/data-y attributes
           x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
@@ -47,14 +46,39 @@ interact('.draggable')
       //so the user will have enough room to drag the object or will make it easier.
       //Also the new x and y defined below will be the parameters
       //that will be use in the dive_algo functionalities.
-      x = Math.round(x/10);
+      x = Math.round(x/4.0909090909);           //maximum time of 220mins
       y = Math.round(y/10);
       
       //show the time = x and depth = y coordinates and status of dive
       textEl && (textEl.textContent = 'time = ' + x + '\n' +
          'depth = ' + y);
 
-      Dive_Status(event,x,y); //get the status of dive
+     
+      if(dive.length == 1)
+      {        
+        dive[event.target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));      //set appropriate pressure group
+        Dive_Status(event,x,y); //get the status of dive
+      }
+      else
+      {
+        if(event.target.id-1 == 0)
+        {
+          Dive_Status(event,x,y);
+        }
+        else
+        {
+          var previousPG = dive[event.target.id-2].getAttribute("data-pg");       //get the PG of previous dive
+          var surfaceInt = document.getElementsByClassName("surface_interval");
+          //reduce pressure group after surface interval
+          //Not sure about this:*********************************************************************************************************
+          var PGafterSI = Reduce_PG(previousPG, surfaceInt[event.target.id-2].value); //surfaceInt[this]
+          x = x + RNT(PGafterSI,y);
+          dive[event.target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));        //dive[this]
+          surfaceInt[event.target.id-2].setAttribute("data-rpg",PGafterSI);           //surfaceInt[this]
+          Dive_Status(event,x,y);
+        }
+      }
+    //Update(event);
     }
 });
 
@@ -84,19 +108,19 @@ function Dive_Status(event,x,y)
 
 function Bad_DIVE(time,depth)
 {
-	var a = 108.9022305174;
-	var b = -0.4437192799;
+  var a = 105.4459074484564;
+  var b = -0.4437192799;
 
-	return (depth > (a*(Math.pow(time,b))));
+  return (depth > (a*(Math.pow(time,b))));
 }
 
 function Warning_DIVE(time,depth)
 {
-	var a = 113.95854764967993;
-	var b = -0.48150981158021355;
-	if(depth>=30)		
-		return true;	//if depth is over 30meters then return warning
-	return ((depth > (a*(Math.pow(time,b))))); 
+  var a = 113.95854764967993;
+  var b = -0.48150981158021355;
+  if(depth>=30)   
+    return true;  //if depth is over 30meters then return warning
+  return ((depth > (a*(Math.pow(time,b))))); 
 }
 
 function Pressure_GROUP(time,depth)
@@ -109,7 +133,7 @@ function Pressure_GROUP(time,depth)
     var c = -1.0231048129283549;
 
     var PG = s * Math.exp(-0.5 * (Math.pow(((Math.log(time) - m) / n), 2) + Math.pow(((Math.log(depth) - q) / r), 2))) + c;
-    var number = Math.round(PG);
+    var number = Math.round(PG)-1;
 
     if (number < 1) {
         return 1;
@@ -129,7 +153,7 @@ function Reduce_PG(previousPG,surface_Interval)
     var c = 0.82154053080283274;
 
     var reducedPG = s * Math.exp(-0.5 * (Math.pow(((previousPG - m) / n), 2) + Math.pow((surface_Interval - q) / r, 2))) + c;
-    var number = Math.round(reducedPG);
+    var number = Math.round(reducedPG)-1;
 
     if (number < 1) {
         return 1;
@@ -153,42 +177,60 @@ function RNT(reducedPG,depth)
 
 function Add_Dive()
 {
-    var newContainer = document.createElement("div");
-    var newDive = document.createElement("div");
-    var main = document.getElementById("main");
-    var l = document.getElementsByClassName("container");
-    newContainer.id = l.length+1;
-    newContainer.className = "container";
-    newDive.id = "dive";
-    newDive.className = "draggable";
-    newDive.innerHTML = '<strong><p></p></strong>';
-    newContainer.align = "left";
+    var newContainer = document.createElement("div");                 //new div tag
+    var newDive = document.createElement("div");                     //new div tag
+    var newDiveId = document.getElementsByClassName("draggable dive");        //get diver
+    var newContainerId = document.getElementsByClassName("container");//get container
 
-    $(main).append(newContainer);     // Append new containers
-    $(newContainer).append(newDive);    // Append draggable diver to new container
+    newContainer.id = newContainerId.length + 1;                      //set newContainer id
+    newContainer.className = "container";                             //set newContainer class
+    newContainer.align = "left";                                      //align the newContainer
+    
+    newDive.id = newDiveId.length + 1;                              //set newDive id
+    newDive.className = "draggable dive";                           //set newDive classNames
+    newDive.setAttribute("data-pg","1");
+    newDive.innerHTML = '<strong><p></p></strong>';                 //show newDive depth and time
+
+    //***************************Temporary Surface interval interface*******************************
+    var SurfaceInt = document.createElement("input")
+    var S = document.getElementsByClassName("surface_interval");
+    SurfaceInt.type = "text";
+    SurfaceInt.id = newDive.id;
+    SurfaceInt.value = 60;
+    SurfaceInt.className = "surface_interval";
+    SurfaceInt.setAttribute("data-rpg","");
+
+    
+    var SurfaceIntTxt = document.createElement("h2");
+    SurfaceIntTxt.innerHTML = "Surface Interval:";
+
+    $(main).append(SurfaceIntTxt, SurfaceInt, newContainer);                    //add the new elements to main
+    $(newContainer).append(newDive);
 }
 
-//Future problems:
-/*
-  1. interact onstart() function does not seem to work?
+function Update(event)
+{ 
+  /*var dive = document.getElementsByClassName("draggable dive");
+  var l = document.createElement("h1");
+  var a = dive[1].getAttribute("data-y");
+  l.innerHTML = a;
+  $("body").append(l);*/
 
-  2. figure out how to implement multiple dives + done.
+  dive = document.getElementsByClassName("draggable dive");
+  si = document.getElementsByClassName("surface_interval");
+  next = event.target.id;
+  current = event.target.id-1;
+  if(dive.length == event.target.id)
+    return;
+  else
+  {
+    for(;current < dive.length; current++)
+    {
+      var x = dive[current].getAttribute("data-x");
+      var y = dive[current].getAttribute("data-y");
+      var currSI = si[current].value;
+      var PPG = dive[current-1];
+    }
+  }
 
-  3. surface interval. Possibly by using interact resize?
-
-  4. if multiple dives are in the page the object
-    can be drag and the time and depth are updating
-    but the status of the dive will not update for 
-    all the dives except the first one. Moving the
-    dive#2,dive#3... will change the status of the
-    dive#1???
-    Possible Fix?:
-      * does div elements have index(div[i])?if so we can iterate through that
-        and update the status of the dives.
-
-  5. make a seperate function for setting the <div> elements
-    to show if it is bc
-  6. RNT functionality
-
-  *that's it for now...
-*/
+}

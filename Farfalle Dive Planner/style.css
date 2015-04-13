@@ -5,7 +5,7 @@ This is the starting style for the diver object, it
 will be change in the function.js depending on the status
 of dive
 */
-#dive {
+.dive {
   width: 100px;
   height:100px;
   
