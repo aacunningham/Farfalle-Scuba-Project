@@ -8,13 +8,14 @@ of dive
 .dive {
   width: 100px;
   height:100px;
-  
+  background-color:#339933; 
 
   background-image: url("animated-diver-2.gif");
   color: white;
 
   border-radius: 0.75em;
-  
+  float: left;
+    
   /* Don't know what these are */
   -webkit-transform: translate(0px, 0px);
           transform: translate(0px, 0px);
@@ -29,6 +30,20 @@ width:1000px/ because: (for now)
 */
 .container {
    	width: 1000px;
-    height: 520px;			
-    background-image: url("background.png");
-    }
+    height: 520px;	
+   
+    float: left;
+}
+
+#main {
+  width: 1000px;
+  position: relative;
+  top:290px;
+  overflow: auto;
+  background-color: #336699;
+}
+
+#SI {
+  float:left;
+  width: 250px;
+}

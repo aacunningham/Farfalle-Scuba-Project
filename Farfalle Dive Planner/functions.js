@@ -53,19 +53,23 @@ interact('.draggable')
       textEl && (textEl.textContent = 'time = ' + x + '\n' +
          'depth = ' + y);
 
-     
-      if(dive.length == 1)
+      //for a more conservative dive status
+      x = x + 1;
+      y = y + 1;
+
+      if(dive.length == 1)  //if there is only ONE dive
       {        
         dive[event.target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));      //set appropriate pressure group
-        Dive_Status(event,x,y); //get the status of dive
+        Dive_Status(event.target.id-1,x,y); //get the status of dive
       }
       else
       {
-        if(event.target.id-1 == 0)
+        if(event.target.id-1 == 0)  //If there is multiple dives and I'm moving the first dive
         {
-          Dive_Status(event,x,y);
+          dive[event.target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));
+          Dive_Status(event.target.id-1,x,y);
         }
-        else
+        else            //else other instances except the first dive
         {
           var previousPG = dive[event.target.id-2].getAttribute("data-pg");       //get the PG of previous dive
           var surfaceInt = document.getElementsByClassName("surface_interval");
@@ -75,34 +79,35 @@ interact('.draggable')
           x = x + RNT(PGafterSI,y);
           dive[event.target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));        //dive[this]
           surfaceInt[event.target.id-2].setAttribute("data-rpg",PGafterSI);           //surfaceInt[this]
-          Dive_Status(event,x,y);
+          Dive_Status(event.target.id-1,x,y);
         }
+        Update(event.target.id);  //update the next dives
       }
-    //Update(event);
+    
     }
 });
 
-function Dive_Status(event,x,y)
+function Dive_Status(i,x,y)
 {
   
-
+    var dive = document.getElementsByClassName("dive");
       if(Bad_DIVE(x,y))
       {
         //change to represent the bad dive.
-        event.target.style.backgroundColor='#CC3300';
-        event.target.style.backgroundImage="url('diver-octopus.gif')";
+        dive[i].style.backgroundColor='#CC3300';
+        dive[i].style.backgroundImage="url('diver-octopus.gif')";
       }
       else if(Warning_DIVE(x,y))
       {
          //change to represent the warning dive
-         event.target.style.backgroundColor='#CC6600';
-         event.target.style.backgroundImage="url('animated-diver-2.gif')";
+         dive[i].style.backgroundColor='#CC6600';
+         dive[i].style.backgroundImage="url('animated-diver-2.gif')";
       }
       else
         {
           //change to represent the good dive
-          event.target.style.backgroundColor='#339933';
-          event.target.style.backgroundImage="url('animated-diver-2.gif')";
+          dive[i].style.backgroundColor='#339933';
+          dive[i].style.backgroundImage="url('animated-diver-2.gif')";
         }
 }
 
@@ -193,7 +198,7 @@ function Add_Dive()
 
     //***************************Temporary Surface interval interface*******************************
     var SurfaceInt = document.createElement("input")
-    var S = document.getElementsByClassName("surface_interval");
+    /*var S = document.getElementsByClassName("surface_interval");
     SurfaceInt.type = "text";
     SurfaceInt.id = newDive.id;
     SurfaceInt.value = 60;
@@ -204,33 +209,63 @@ function Add_Dive()
     var SurfaceIntTxt = document.createElement("h2");
     SurfaceIntTxt.innerHTML = "Surface Interval:";
 
-    $(main).append(SurfaceIntTxt, SurfaceInt, newContainer);                    //add the new elements to main
+    $(main).append(SurfaceIntTxt, SurfaceInt, newContainer);                    //add the new elements to main*/
+    var SurfaceInt = document.createElement("div");
+    var label = document.createElement("h2");
+    var input = document.createElement("input");
+    SurfaceInt.id = "SI";
+    label.innerHTML = "Surface Interval: ";
+
+    input.id = newDive.id;
+    input.className = "surface_interval";
+    input.value = 60;
+    input.setAttribute("data-rpg", "1");
+    input.type = "text";
+
+    $(SurfaceInt).append(label,input);
+
+    var width = $(main).width();
+    $(main).width(width + 1000 + 250);
+
+    $(main).append(SurfaceInt, newContainer);
     $(newContainer).append(newDive);
 }
 
-function Update(event)
+function Update(curr)
 { 
   /*var dive = document.getElementsByClassName("draggable dive");
   var l = document.createElement("h1");
   var a = dive[1].getAttribute("data-y");
   l.innerHTML = a;
   $("body").append(l);*/
-
-  dive = document.getElementsByClassName("draggable dive");
-  si = document.getElementsByClassName("surface_interval");
-  next = event.target.id;
-  current = event.target.id-1;
-  if(dive.length == event.target.id)
+  var dive = document.getElementsByClassName("draggable dive");
+  var SInt = document.getElementsByClassName("surface_interval");
+  var i =0;
+  if(curr-1 == dive.length)   //if last dive do nothing
     return;
-  else
+  else          //first dive
   {
-    for(;current < dive.length; current++)
+    while(curr < dive.length)
     {
-      var x = dive[current].getAttribute("data-x");
-      var y = dive[current].getAttribute("data-y");
-      var currSI = si[current].value;
-      var PPG = dive[current-1];
+      var pg = dive[curr-1].getAttribute("data-pg");
+      var si = SInt[curr-1].value;
+      var rpg = Reduce_PG(pg,si);
+      var x = dive[curr].getAttribute("data-x");
+      var y = dive[curr].getAttribute("data-y");
+      x = Math.round(x/4.0909090909)+1;
+      y = Math.round(y/10)+1;
+
+      //alert(si);
+
+      x = x + RNT(rpg,y);
+      SInt[curr-1].setAttribute("data-rpg",rpg);
+      Dive_Status(curr,x,y);
+      
+
+      //alert(curr);      alert(dive.length);
+      curr++;
     }
+
   }
 
 }
