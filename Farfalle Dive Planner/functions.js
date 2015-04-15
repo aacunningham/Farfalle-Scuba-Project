@@ -216,6 +216,8 @@ function Add_Dive()
     var SurfaceInt = document.createElement("div");
     var label = document.createElement("h2");
     var input = document.createElement("input");
+    var confirm = document.createElement("button");
+    var t = document.createTextNode("Confirm");
     SurfaceInt.id = "SI";
     label.innerHTML = "Surface Interval: ";
 
@@ -224,8 +226,20 @@ function Add_Dive()
     input.value = 60;
     input.setAttribute("data-rpg", "1");
     input.type = "text";
+    input.style.display = 'none';
 
-    $(SurfaceInt).append(label,input);
+    confirm.id = "confirm";
+    $(confirm).append(t);
+    confirm.style.display = 'none';
+    //confirm.onclick = function() { Update(input.id); }
+    label.onclick = function() { input.style.display = 'block';
+                                 confirm.style.display = 'block'; }
+
+    confirm.onclick = function() {  input.style.display = 'none';
+                                    confirm.style.display = 'none'; 
+                                    Update(newDive.id-1);}
+
+    $(SurfaceInt).append(label,input,confirm);
 
     var width = $(main).width();
     $(main).width(width + 1000 + 250);
@@ -243,10 +257,9 @@ function Update(curr)
   $("body").append(l);*/
   var dive = document.getElementsByClassName("draggable dive");
   var SInt = document.getElementsByClassName("surface_interval");
-  var i =0;
-  if(curr-1 == dive.length)   //if last dive do nothing
-    return;
-  else          //first dive
+  //if(curr-1 == dive.length)   //if last dive do nothing
+    //return;
+  //else          //first dive
   {
     while(curr < dive.length)
     {
@@ -255,17 +268,15 @@ function Update(curr)
       var rpg = Reduce_PG(pg,si);
       var x = dive[curr].getAttribute("data-x");
       var y = dive[curr].getAttribute("data-y");
+
+      //for a more conservative results
       x = Math.round(x/4.0909090909)+1;
       y = Math.round(y/10)+1;
 
-      //alert(si);
-
       x = x + RNT(rpg,y);
+      dive[curr].setAttribute("data-pg",Pressure_GROUP(x,y))
       SInt[curr-1].setAttribute("data-rpg",rpg);
-      Dive_Status(curr,x,y);
-      
-
-      //alert(curr);      alert(dive.length);
+      Dive_Status(curr,x+1,y);
       curr++;
     }
 

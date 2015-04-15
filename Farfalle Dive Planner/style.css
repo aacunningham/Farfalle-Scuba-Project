@@ -25,7 +25,7 @@ of dive
   background-color: black;
   position: relative;
   left: 100px;
-  width: 100px;  
+  width: 110px;  
 }
 
 
@@ -44,7 +44,7 @@ of dive
   background-color: #336699;
   padding-left: 50px;
   padding-right: 150px;
-  margin-left: 140px;
+ 
 }
 
 #SI {
@@ -52,10 +52,25 @@ of dive
   width: 250px;
 }
 
+#SI:hover {
+  cursor: pointer;
+}
+
+#confirm {
+  float:left;
+  position: inherit;
+}
+
+.surface_interval {
+  width: 50px;
+  float: left;
+}
+
 button {
   position: fixed;
   left: 1000px;
 }
+
 
 body {
 
