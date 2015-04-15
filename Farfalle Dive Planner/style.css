@@ -11,39 +11,52 @@ of dive
   background-color:#339933; 
 
   background-image: url("animated-diver-2.gif");
-  color: white;
 
-  border-radius: 0.75em;
+  color: white;
+  border-radius: 10em;
   float: left;
-    
-  /* Don't know what these are */
+
   -webkit-transform: translate(0px, 0px);
           transform: translate(0px, 0px);
 }
 
-/*
-container is the defined draggable area that the draggable object can move
-height: 520px? because:
-       height container - height of drag-me = 420/10 which is the maximum depth in the Padi table(meters)
-width:1000px/ because: (for now)
-       width container - width of drag-me = 900/10  is the maximum time in minutes(for now).
-*/
+
+#time_depth{
+  background-color: black;
+  position: relative;
+  left: 100px;
+  width: 100px;  
+}
+
+
 .container {
    	width: 1000px;
     height: 520px;	
-   
-    float: left;
-}
+    background-color: #336699;
+    float: left; 
+  }
 
 #main {
   width: 1000px;
   position: relative;
-  top:290px;
+  top:100px;
   overflow: auto;
   background-color: #336699;
+  padding-left: 50px;
+  padding-right: 150px;
+  margin-left: 140px;
 }
 
 #SI {
   float:left;
   width: 250px;
+}
+
+button {
+  position: fixed;
+  left: 1000px;
+}
+
+body {
+
 }

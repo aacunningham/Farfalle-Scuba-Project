@@ -56,6 +56,8 @@ interact('.draggable')
       //for a more conservative dive status
       x = x + 1;
       y = y + 1;
+      //var width = $('#main').width();
+      //var main = document.getElementById('main').style.width = width+x+"px";
 
       if(dive.length == 1)  //if there is only ONE dive
       {        
@@ -82,15 +84,14 @@ interact('.draggable')
           Dive_Status(event.target.id-1,x,y);
         }
         Update(event.target.id);  //update the next dives
-      }
-    
+      }  
     }
 });
 
 function Dive_Status(i,x,y)
 {
   
-    var dive = document.getElementsByClassName("dive");
+    var dive = document.getElementsByClassName("draggable dive");
       if(Bad_DIVE(x,y))
       {
         //change to represent the bad dive.
@@ -194,7 +195,9 @@ function Add_Dive()
     newDive.id = newDiveId.length + 1;                              //set newDive id
     newDive.className = "draggable dive";                           //set newDive classNames
     newDive.setAttribute("data-pg","1");
-    newDive.innerHTML = '<strong><p></p></strong>';                 //show newDive depth and time
+    newDive.innerHTML = '<div id="time_depth"><strong><p></p></strong></div>';                 //show newDive depth and time
+ //   newDive.setAttribute('data-x',100);
+ //   newDive.setAttribute("data-y","100px");
 
     //***************************Temporary Surface interval interface*******************************
     var SurfaceInt = document.createElement("input")
