@@ -20,6 +20,15 @@ of dive
           transform: translate(0px, 0px);
 }
 
+.line {
+  
+  border-style: dashed;   /*This could be solid*/
+  border-color: #339933;
+  border-top-color: transparent;
+  border-width: 10px;
+  position: absolute;
+}
+
 
 #time_depth{
   background-color: black;
@@ -43,8 +52,7 @@ of dive
   overflow: auto;
   background-color: #336699;
   padding-left: 50px;
-  padding-right: 150px;
- 
+  padding-right: 150px; 
 }
 
 #SI {

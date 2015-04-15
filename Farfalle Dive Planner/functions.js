@@ -22,7 +22,6 @@ interact('.draggable')
                                                             //In this case the whole object cannot go out
                                                             //  of the area.
     },
-
     // call this function on every dragmove event
     onmove: function (event) 
     {
@@ -41,6 +40,11 @@ interact('.draggable')
       // update the position attributes
       target.setAttribute('data-x', x);
       target.setAttribute('data-y', y);
+
+      //This is the line that follows the draggable object.
+      var line = document.getElementsByClassName("line");
+      $(line[event.target.id-1]).width(x+50);
+      $(line[event.target.id-1]).height(y+50);
 
       //minimize the coordinates by diving by 10
       //so the user will have enough room to drag the object or will make it easier.
@@ -92,24 +96,30 @@ function Dive_Status(i,x,y)
 {
   
     var dive = document.getElementsByClassName("draggable dive");
+    var line = document.getElementsByClassName("line");
       if(Bad_DIVE(x,y))
       {
         //change to represent the bad dive.
         dive[i].style.backgroundColor='#CC3300';
         dive[i].style.backgroundImage="url('diver-octopus.gif')";
+        line[i].style.borderColor='#CC3300';
       }
       else if(Warning_DIVE(x,y))
       {
          //change to represent the warning dive
          dive[i].style.backgroundColor='#CC6600';
          dive[i].style.backgroundImage="url('animated-diver-2.gif')";
+         line[i].style.borderColor='#CC6600';
       }
       else
         {
           //change to represent the good dive
           dive[i].style.backgroundColor='#339933';
           dive[i].style.backgroundImage="url('animated-diver-2.gif')";
+          line[i].style.borderColor='#339933';
         }
+    line[i].style.borderTopColor='transparent';
+    line[i].style.backgroundColor='transparent';
 }
 
 function Bad_DIVE(time,depth)
@@ -183,10 +193,11 @@ function RNT(reducedPG,depth)
 
 function Add_Dive()
 {
-    var newContainer = document.createElement("div");                 //new div tag
-    var newDive = document.createElement("div");                     //new div tag
-    var newDiveId = document.getElementsByClassName("draggable dive");        //get diver
-    var newContainerId = document.getElementsByClassName("container");//get container
+    var newContainer = document.createElement("div");                    //new div tag
+    var newDive = document.createElement("div");                        //new div tag
+    var newDiveId = document.getElementsByClassName("draggable dive");  //get diver
+    var newContainerId = document.getElementsByClassName("container");  //get container
+    var newline = document.createElement("div");                        //create new dynamic anchor line
 
     newContainer.id = newContainerId.length + 1;                      //set newContainer id
     newContainer.className = "container";                             //set newContainer class
@@ -196,23 +207,13 @@ function Add_Dive()
     newDive.className = "draggable dive";                           //set newDive classNames
     newDive.setAttribute("data-pg","1");
     newDive.innerHTML = '<div id="time_depth"><strong><p></p></strong></div>';                 //show newDive depth and time
- //   newDive.setAttribute('data-x',100);
- //   newDive.setAttribute("data-y","100px");
+
+    newline.className = "line";
+    newline.id = newDive.id
 
     //***************************Temporary Surface interval interface*******************************
     var SurfaceInt = document.createElement("input")
-    /*var S = document.getElementsByClassName("surface_interval");
-    SurfaceInt.type = "text";
-    SurfaceInt.id = newDive.id;
-    SurfaceInt.value = 60;
-    SurfaceInt.className = "surface_interval";
-    SurfaceInt.setAttribute("data-rpg","");
-
     
-    var SurfaceIntTxt = document.createElement("h2");
-    SurfaceIntTxt.innerHTML = "Surface Interval:";
-
-    $(main).append(SurfaceIntTxt, SurfaceInt, newContainer);                    //add the new elements to main*/
     var SurfaceInt = document.createElement("div");
     var label = document.createElement("h2");
     var input = document.createElement("input");
@@ -231,13 +232,14 @@ function Add_Dive()
     confirm.id = "confirm";
     $(confirm).append(t);
     confirm.style.display = 'none';
-    //confirm.onclick = function() { Update(input.id); }
+
     label.onclick = function() { input.style.display = 'block';
                                  confirm.style.display = 'block'; }
 
     confirm.onclick = function() {  input.style.display = 'none';
                                     confirm.style.display = 'none'; 
-                                    Update(newDive.id-1);}
+                                    Update(newDive.id-1);
+                                  }
 
     $(SurfaceInt).append(label,input,confirm);
 
@@ -245,21 +247,13 @@ function Add_Dive()
     $(main).width(width + 1000 + 250);
 
     $(main).append(SurfaceInt, newContainer);
-    $(newContainer).append(newDive);
+    $(newContainer).append(newline,newDive);
 }
 
 function Update(curr)
 { 
-  /*var dive = document.getElementsByClassName("draggable dive");
-  var l = document.createElement("h1");
-  var a = dive[1].getAttribute("data-y");
-  l.innerHTML = a;
-  $("body").append(l);*/
   var dive = document.getElementsByClassName("draggable dive");
   var SInt = document.getElementsByClassName("surface_interval");
-  //if(curr-1 == dive.length)   //if last dive do nothing
-    //return;
-  //else          //first dive
   {
     while(curr < dive.length)
     {
