@@ -55,9 +55,9 @@ of dive
 
 
 .container {
-   	width: 1000px;
-    height: 520px;	
-    background-color: #336699;
+    width: 1000px;
+    height: 520px;  
+    
     float: left; 
     overflow: visible;
     top: 100px;
@@ -66,7 +66,7 @@ of dive
 #main {
   width: 1000px;
   position: relative;
-  top:100px;
+  margin-top:100px;
   overflow: visible;
   background-color: #336699;
   padding-left: 150px;
@@ -76,18 +76,13 @@ of dive
 
 .SI {
   float:left;
-  width: 510px;
-  background-color: #336699;
-  text-decoration: underline;
+  width: 500px;  
   height: 520px;
-}
-
-.SI:hover {
-  cursor: pointer;
+  position:relative;
+  top: -50px;
 }
 
 #confirm {
-  float:center;
   position: inherit;
 }
 
@@ -95,15 +90,33 @@ of dive
   width: 50px;
   float: center;
 }
+h2 {
+text-decoration:underline;
+text-align:center;
+}
+
+h2:hover {
+  cursor: pointer;
+}
+
+#confirm:hover {
+  cursor: pointer;
+}
 
 #add {
   position: fixed;
-  margin-left: 1300px;
+  margin-left: 1500px;
+  margin-top: -90px;
+  height:50px;
+  width:50px;
 }
 
 #delete {
    position: fixed;
-   margin-left: 1390px;
+   margin-left: 1500px;
+   margin-top: -40px;
+   height:50px;
+   width:50px;
 }
 
 .depth_time_txt:before {
@@ -113,3 +126,66 @@ of dive
 .depth_time_txt.no-before:before {
   content: none;
 }
+
+.boat1 {
+  position: absolute;
+  top: -90px;
+  width: 100px;
+  height: 100px;
+  z-index: 1;
+  background-color: black;
+}
+
+.boat2 {
+  position: absolute;
+  top: -80px;
+  width: 100px;
+  height: 100px;
+  z-index: 1;
+  left: 250px;
+  background-color: black;
+  left: 50px;
+}
+
+
+.line {
+  border-style:solid;
+  border-color: #339933;
+  border-top-color: transparent;
+  background-color: transparent;
+  border-right-color: transparent;
+  border-width: 10px;
+  position: absolute;
+  border-radius: 10px;
+  top:-20px;
+  margin-left: 50px;
+}
+
+.line2 {
+  border-style:solid;
+  border-color: #339933;
+  border-width: 10px;
+  position: absolute;
+  border-radius: 10px;
+  top: 70px;
+  
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+}
+
+.decomp_stop {
+  width: 50px;
+  height: 70px;
+  position: absolute;
+  background-color: transparent;
+  border-color: #339933;
+  border-style: solid;
+  border-width: 10px;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  top: -10px;
+}
+
+body{
+background-image: url("background.png");}

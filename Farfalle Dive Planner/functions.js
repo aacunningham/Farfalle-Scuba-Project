@@ -10,7 +10,8 @@ draggable was implemented by using interact.js library by:
 interact('.draggable')
   .draggable(
   {
-    autoScroll:true,
+      autoScroll: true,
+      inertia: true,
     // keep the element within the area of it's parent
     //restrict the draggable object inside another object(image)
     restrict: {
@@ -43,15 +44,45 @@ interact('.draggable')
       target.setAttribute('data-y', y);
 
 
+      //Hacky anchor line that uses borderss. If there is a more preferable way of doing this delete 
+      //these lines.
+      /////////////////////////////////////////////////////////////////////////////////////////////
+      //This is the anchor line that follows the draggable object.
+      //It is pretty hacky because it uses css borders instead of lines.
+      var line = document.getElementsByClassName("line");
+      $(line[event.target.id-1]).width(x+50); //the width of the border adjust base on the x pos
+      $(line[event.target.id-1]).height(y+50);//the heght of the border adjust base on the y pos
+      // x+50 and y+50 so it won't go on top of the diver
+
+      var line2 = document.getElementsByClassName("line2");
+      $(line2[event.target.id-1]).width(x+40); //the width o
+      $(line2[event.target.id-1]).height(y-30);
+
+      //This is the line for the decompression stop or safety stop.
+      //Again, it is pretty hacky because it uses css borders.
+      var decomp_stop = document.getElementsByClassName("decomp_stop");
+      $(decomp_stop[event.target.id-1]).css('left',x+50+"px"); //Again like the line on top but instead of adjusting the width and height
+      //it is always aligned left with values xpos+50 pixels.
+
+      //boat graphics
+      var boat2 = document.getElementsByClassName("boat2");
+      $(boat2[event.target.id-1]).css('left',x+75+"px");
+      ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+      //For hiding the depth time label
+      //Ths line just nulls the depth_time_txt:before in css
+      var p = document.getElementsByClassName("depth_time_txt");
+      $(p[event.target.id-1]).addClass('no-before'); //removing the before pseudo content of <p>
+
+
       //minimize the coordinates by diving by 10
       //so the user will have enough room to drag the object or will make it easier.
       //Also the new x and y defined below will be the parameters
       //that will be use in the dive_algo functionalities.
       x = Math.round(x/4.0909090909);           //maximum time of 220mins
       y = Math.round(y/10);
-
-      var p = document.getElementsByClassName("depth_time_txt");
-      $(p[event.target.id-1]).addClass('no-before'); //removing the before pseudo content of <p>
       
       //show the time = x and depth = y coordinates and status of dive
       textEl && (textEl.textContent = 'Time = ' + x + '\n' +
@@ -97,6 +128,11 @@ function Dive_Status(i,x,y)
   
     var dive = document.getElementsByClassName("draggable dive");
 
+    ///////////////////////////////////////////////////////////////////////
+    var line = document.getElementsByClassName("line");
+    var line2 = document.getElementsByClassName("line2");
+    var decomp_stop = document.getElementsByClassName("decomp_stop");
+    ///////////////////////////////////////////////////////////////////////
 
       if(Bad_DIVE(x,y))
       {
@@ -104,7 +140,12 @@ function Dive_Status(i,x,y)
         dive[i].style.backgroundColor='#CC3300';
         dive[i].style.backgroundImage="url('diver-octopus.gif')";
 
-        
+        ///////////////////////////////////////////////////////////////////
+        line[i].style.borderColor='#CC3300';
+        line2[i].style.borderRightColor='#CC3300';
+        decomp_stop[i].style.borderRightColor='#CC3300';
+        decomp_stop[i].style.borderBottomColor='#CC3300';
+        ///////////////////////////////////////////////////////////////////
       }
       else if(Warning_DIVE(x,y))
       {
@@ -112,7 +153,12 @@ function Dive_Status(i,x,y)
          dive[i].style.backgroundColor='#CC6600';
          dive[i].style.backgroundImage="url('animated-diver-2.gif')";
 
-         
+         //////////////////////////////////////////////////////////////////
+         line[i].style.borderColor='#CC6600';
+         line2[i].style.borderRightColor='#CC6600';
+         decomp_stop[i].style.borderRightColor='#CC6600';
+         decomp_stop[i].style.borderBottomColor='#CC6600';
+         /////////////////////////////////////////////////////////////////
       }
       else
         {
@@ -120,8 +166,19 @@ function Dive_Status(i,x,y)
           dive[i].style.backgroundColor='#339933';
           dive[i].style.backgroundImage="url('animated-diver-2.gif')";
 
+          ////////////////////////////////////////////////////////////////
+          line[i].style.borderColor='#339933';
+          line2[i].style.borderRightColor='#339933';
+          decomp_stop[i].style.borderRightColor='#339933';
+          decomp_stop[i].style.borderBottomColor='#339933';
+          ///////////////////////////////////////////////////////////////
         }
 
+    /////////////////////////////////////////////////////////////////////
+    line[i].style.borderTopColor='transparent'; //keep this transparent
+    line[i].style.backgroundColor='transparent';//keep this transparent
+    line[i].style.borderRightColor='transparent';//keep this transparent
+    /////////////////////////////////////////////////////////////////////
 }
 
 function Bad_DIVE(time,depth)
@@ -212,6 +269,29 @@ function Add_Dive()
     newDive.setAttribute("data-pg","1");
     newDive.innerHTML = '<div id="time_depth"><strong><p class="depth_time_txt"></p></strong></div>';  //show newDive depth and time
 
+    //If going to change how the anchor line works, better delete this lines
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //Anchor line that uses bordersss
+    var newline = document.createElement("div");                        //create new dynamic anchor line
+    var newline2 = document.createElement("div");
+    var newdecomp_stop = document.createElement("div");
+
+    newline.className = "line"; //set the class of the anchor line
+    newline.id = newDive.id;    //set the id of the anchor line
+    newline2.className = "line2"
+    newline2.id = newDive.id;
+
+    newdecomp_stop.className = "decomp_stop";   //set the class of decomp_stop (a transparent box with colored borders)
+    newdecomp_stop.id = newDive.id;             //set the id of the decomp_stop
+
+    var boat1 = document.createElement("div");
+    var boat2 = document.createElement("div");
+    boat1.className = "boat1";
+    boat1.id = newDive.id;
+    boat2.className = "boat2";
+    boat2.id = newDive.id;
+    $(newline).append(newline2,boat2,newdecomp_stop);          //add decomp_stop to line
+    ////////////////////////////////////////////////////////////////////////////////////////////
 
 
     //***************************Temporary Surface interval interface*******************************
@@ -253,17 +333,18 @@ function Add_Dive()
     
 
     $(SurfaceInt).append(label,input,confirm);
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var width = $(main).width();
-    $(main).width(width + 1000 + 510);
+    $(main).width(width + 1000 + 500);
 
-    $(newContainer).append(newDive);    ///newline = anchor line that uses bordersss
+    $(newContainer).append(boat1, newline, newDive);    ///newline = anchor line that uses bordersss
     $(main).append(SurfaceInt, newContainer);
     
 
     //for automatic scrolling when adding dive
    $('html, body').animate({
-            scrollLeft: width+1000+510});
+            scrollLeft: width+1000+500});
 }
 
 function Delete_Dive()
@@ -277,7 +358,7 @@ function Delete_Dive()
     $(container[last-1]).remove();
     $(si[last-2]).remove();
     var width = $(main).width();
-    $(main).width(width - 1000 - 510);
+    $(main).width(width - 1000 - 500);
 
   }
 }
@@ -308,4 +389,3 @@ function Update(curr)
     }
   }
 }
-
