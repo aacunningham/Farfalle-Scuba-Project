@@ -5,36 +5,52 @@ This is the starting style for the diver object, it
 will be change in the function.js depending on the status
 of dive
 */
+
 .dive {
   width: 100px;
   height:100px;
   background-color:#339933; 
 
   background-image: url("animated-diver-2.gif");
-
+  position: absolute;
   color: white;
   border-radius: 10em;
-  float: left;
+  z-index: 1;
 
   -webkit-transform: translate(0px, 0px);
           transform: translate(0px, 0px);
 }
 
-.line {
-  
-  border-style: dashed;   /*This could be solid*/
-  border-color: #339933;
-  border-top-color: transparent;
-  border-width: 10px;
-  position: absolute;
-}
-
 
 #time_depth{
+  width: 110px;
+  height: 80px;
+  top: 10px;
   background-color: black;
   position: relative;
-  left: 100px;
-  width: 110px;  
+  left: 120px;
+  text-align: left; 
+  font-family: Arial, Helvetica, sans-serif; 
+  -moz-border-radius:    10px;
+   -webkit-border-radius: 10px;
+   border-radius:         10px;
+   text-align: center;
+   font-size: 120%;
+   font-weight: bolder;
+   display: inline-block;
+   
+}
+
+#time_depth:before {
+   content:"";
+   position: absolute;
+   right: 100%;
+   top: 35%;
+   width: 0;
+   height: 0;
+   border-top: 13px solid transparent;
+   border-right: 10px solid black;
+   border-bottom: 13px solid transparent;
 }
 
 
@@ -43,43 +59,57 @@ of dive
     height: 520px;	
     background-color: #336699;
     float: left; 
+    overflow: visible;
+    top: 100px;
   }
 
 #main {
   width: 1000px;
   position: relative;
   top:100px;
-  overflow: auto;
+  overflow: visible;
   background-color: #336699;
-  padding-left: 50px;
-  padding-right: 150px; 
+  padding-left: 150px;
+  
+  top:100px;
 }
 
-#SI {
+.SI {
   float:left;
-  width: 250px;
+  width: 510px;
+  background-color: #336699;
+  text-decoration: underline;
+  height: 520px;
 }
 
-#SI:hover {
+.SI:hover {
   cursor: pointer;
 }
 
 #confirm {
-  float:left;
+  float:center;
   position: inherit;
 }
 
 .surface_interval {
   width: 50px;
-  float: left;
+  float: center;
 }
 
-button {
+#add {
   position: fixed;
-  left: 1000px;
+  margin-left: 1300px;
 }
 
+#delete {
+   position: fixed;
+   margin-left: 1390px;
+}
 
-body {
+.depth_time_txt:before {
+  content: "Time = 0 Depth = 0"; 
+}
 
+.depth_time_txt.no-before:before {
+  content: none;
 }

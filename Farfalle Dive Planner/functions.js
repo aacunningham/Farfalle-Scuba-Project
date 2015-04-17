@@ -10,6 +10,7 @@ draggable was implemented by using interact.js library by:
 interact('.draggable')
   .draggable(
   {
+    autoScroll:true,
     // keep the element within the area of it's parent
     //restrict the draggable object inside another object(image)
     restrict: {
@@ -17,7 +18,7 @@ interact('.draggable')
       //endOnly: true,            //endOnly is used if we want the draggable object to
                                   //automatically move inside the defined bounds in the
                                   //event that it goes out.
-      elementRect: { top: 0, left: 0, bottom: 1, right: 1 } //define the part of the draggable object
+      elementRect: { top: -1, left: -0.4, bottom: 1, right: 1 } //define the part of the draggable object
                                                             //  that can go out of the draggable area.
                                                             //In this case the whole object cannot go out
                                                             //  of the area.
@@ -41,10 +42,6 @@ interact('.draggable')
       target.setAttribute('data-x', x);
       target.setAttribute('data-y', y);
 
-      //This is the line that follows the draggable object.
-      var line = document.getElementsByClassName("line");
-      $(line[event.target.id-1]).width(x+50);
-      $(line[event.target.id-1]).height(y+50);
 
       //minimize the coordinates by diving by 10
       //so the user will have enough room to drag the object or will make it easier.
@@ -52,17 +49,19 @@ interact('.draggable')
       //that will be use in the dive_algo functionalities.
       x = Math.round(x/4.0909090909);           //maximum time of 220mins
       y = Math.round(y/10);
+
+      var p = document.getElementsByClassName("depth_time_txt");
+      $(p[event.target.id-1]).addClass('no-before'); //removing the before pseudo content of <p>
       
       //show the time = x and depth = y coordinates and status of dive
-      textEl && (textEl.textContent = 'time = ' + x + '\n' +
-         'depth = ' + y);
+      textEl && (textEl.textContent = 'Time = ' + x + '\n' +
+         'Depth = ' + y);
 
       //for a more conservative dive status
       x = x + 1;
       y = y + 1;
       //var width = $('#main').width();
-      //var main = document.getElementById('main').style.width = width+x+"px";
-
+      //The logic behind the implementation of multiple dive status
       if(dive.length == 1)  //if there is only ONE dive
       {        
         dive[event.target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));      //set appropriate pressure group
@@ -94,32 +93,35 @@ interact('.draggable')
 
 function Dive_Status(i,x,y)
 {
+  //Dive status updates the diver,anchor line, and decomp_stop line status.
   
     var dive = document.getElementsByClassName("draggable dive");
-    var line = document.getElementsByClassName("line");
+
+
       if(Bad_DIVE(x,y))
       {
         //change to represent the bad dive.
         dive[i].style.backgroundColor='#CC3300';
         dive[i].style.backgroundImage="url('diver-octopus.gif')";
-        line[i].style.borderColor='#CC3300';
+
+        
       }
       else if(Warning_DIVE(x,y))
       {
          //change to represent the warning dive
          dive[i].style.backgroundColor='#CC6600';
          dive[i].style.backgroundImage="url('animated-diver-2.gif')";
-         line[i].style.borderColor='#CC6600';
+
+         
       }
       else
         {
           //change to represent the good dive
           dive[i].style.backgroundColor='#339933';
           dive[i].style.backgroundImage="url('animated-diver-2.gif')";
-          line[i].style.borderColor='#339933';
+
         }
-    line[i].style.borderTopColor='transparent';
-    line[i].style.backgroundColor='transparent';
+
 }
 
 function Bad_DIVE(time,depth)
@@ -193,11 +195,13 @@ function RNT(reducedPG,depth)
 
 function Add_Dive()
 {
+//Add_Dive creates all elements that is required to create another dive. Once all the elements are created 
+//it adds it to the "main" div to be rendered in the screen.
+//This uses JQuery.
     var newContainer = document.createElement("div");                    //new div tag
     var newDive = document.createElement("div");                        //new div tag
     var newDiveId = document.getElementsByClassName("draggable dive");  //get diver
     var newContainerId = document.getElementsByClassName("container");  //get container
-    var newline = document.createElement("div");                        //create new dynamic anchor line
 
     newContainer.id = newContainerId.length + 1;                      //set newContainer id
     newContainer.className = "container";                             //set newContainer class
@@ -206,10 +210,9 @@ function Add_Dive()
     newDive.id = newDiveId.length + 1;                              //set newDive id
     newDive.className = "draggable dive";                           //set newDive classNames
     newDive.setAttribute("data-pg","1");
-    newDive.innerHTML = '<div id="time_depth"><strong><p></p></strong></div>';                 //show newDive depth and time
+    newDive.innerHTML = '<div id="time_depth"><strong><p class="depth_time_txt"></p></strong></div>';  //show newDive depth and time
 
-    newline.className = "line";
-    newline.id = newDive.id
+
 
     //***************************Temporary Surface interval interface*******************************
     var SurfaceInt = document.createElement("input")
@@ -219,8 +222,7 @@ function Add_Dive()
     var input = document.createElement("input");
     var confirm = document.createElement("button");
     var t = document.createTextNode("Confirm");
-    SurfaceInt.id = "SI";
-    label.innerHTML = "Surface Interval: ";
+    SurfaceInt.className = "SI";
 
     input.id = newDive.id;
     input.className = "surface_interval";
@@ -229,31 +231,62 @@ function Add_Dive()
     input.type = "text";
     input.style.display = 'none';
 
+
     confirm.id = "confirm";
     $(confirm).append(t);
     confirm.style.display = 'none';
+    label.innerHTML = "Surface Interval: " + input.value + "min.";
 
     label.onclick = function() { input.style.display = 'block';
                                  confirm.style.display = 'block'; }
 
-    confirm.onclick = function() {  input.style.display = 'none';
-                                    confirm.style.display = 'none'; 
-                                    Update(newDive.id-1);
+    confirm.onclick = function() {  if(input.value<=0)
+                                    {alert("Surface Interval cannot be 0min.");}
+                                    else
+                                    {
+                                      input.style.display = 'none';
+                                      confirm.style.display = 'none'; 
+                                      label.innerHTML = "Surface Interval: " + input.value + "min.";
+                                      Update(newDive.id-1);
+                                    }
                                   }
+    
 
     $(SurfaceInt).append(label,input,confirm);
 
     var width = $(main).width();
-    $(main).width(width + 1000 + 250);
+    $(main).width(width + 1000 + 510);
 
+    $(newContainer).append(newDive);    ///newline = anchor line that uses bordersss
     $(main).append(SurfaceInt, newContainer);
-    $(newContainer).append(newline,newDive);
+    
+
+    //for automatic scrolling when adding dive
+   $('html, body').animate({
+            scrollLeft: width+1000+510});
+}
+
+function Delete_Dive()
+{
+  var dive = document.getElementsByClassName("draggable dive");
+  var container = document.getElementsByClassName("container");
+  var si = document.getElementsByClassName("SI")
+  var last = dive.length;
+  if(dive.length != 1)
+  {
+    $(container[last-1]).remove();
+    $(si[last-2]).remove();
+    var width = $(main).width();
+    $(main).width(width - 1000 - 510);
+
+  }
 }
 
 function Update(curr)
 { 
   var dive = document.getElementsByClassName("draggable dive");
   var SInt = document.getElementsByClassName("surface_interval");
+  var i = curr;
   {
     while(curr < dive.length)
     {
@@ -273,7 +306,6 @@ function Update(curr)
       Dive_Status(curr,x+1,y);
       curr++;
     }
-
   }
-
 }
+
