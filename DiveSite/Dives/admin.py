@@ -8,12 +8,12 @@ class DiveCreationForm(forms.ModelForm):
     class Meta:
         model = Dive
         fields = '__all__'
-        widgets = {'name': forms.HiddenInput()}
+        widgets = {'dive_id': forms.HiddenInput()}
 
     def clean(self):
         cleaned_data = super(DiveCreationForm, self).clean()
         curr_dive_plan = cleaned_data.get('diveplan')
-        cleaned_data['name'] = str(curr_dive_plan.dive_set.all().count())
+        cleaned_data['dive_id'] = str(curr_dive_plan.dive_set.all().count())
         return cleaned_data
 
 
@@ -23,7 +23,7 @@ class DivePlanAdmin(admin.ModelAdmin):
 class DiveAdmin(admin.ModelAdmin):
     form = DiveCreationForm
 
-    fields = ['name', 'time', 'depth', 'surface_interval', 'diveplan',]
+    fields = ['dive_id', 'time', 'depth', 'surface_interval', 'diveplan',]
 
 admin.site.register(DivePlan, DivePlanAdmin)
 admin.site.register(Dive, DiveAdmin)
