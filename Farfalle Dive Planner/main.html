@@ -6,17 +6,29 @@
 		<script src="interact.js"></script>
 		<script src="functions.js"></script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<title>Farfalle</title>
 	</head>
 
 	<body>
 		<button onclick="Add_Dive()">Add Dive</button>
-		<div id = "main" align ="center">
-			<div id="container" align ="left">
-				<div id="dive" class="draggable">
-					<strong><p></p></strong>
+		<button onclick="Delete_Dive()">Delete Dive</button>
+        <button onclick="Load_Dive()">Load Dive</button>
+        <button onclick="Set_Dive('1', 40, 100)">Set Dive 1</button>
+        <button onclick="Set_Dive('2', 70, 200)">Set Dive 2</button>
+		<div id="main" align ="center">
+			<div class="container" align ="left">
+				<div class="boat1"></div>
+				<div class="line">
+					<div class="line2"></div>
+					<div class="boat2"></div>
+					<div class="decomp_stop"></div>
+				</div>
+				<div id="1" class="draggable dive" data-pg="1">
+					<div id="time_depth">
+						<strong><p class="depth_time_txt"></p></strong>
+					</div>
 				</div>
 			</div>
 		</div>
-		<button onclick="Update()">Dive</button>
 	</body>
 </html>

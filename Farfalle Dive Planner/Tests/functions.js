@@ -1,7 +1,7 @@
 
 function Bad_DIVE(time,depth)
 {
-	var a = 108.9022305174;
+	var a = 105.4459074484564;
 	var b = -0.4437192799;
 
 	return (depth > (a*(Math.pow(time,b))));

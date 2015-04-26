@@ -10,6 +10,8 @@ draggable was implemented by using interact.js library by:
 interact('.draggable')
   .draggable(
   {
+      autoScroll: true,
+      inertia: true,
     // keep the element within the area of it's parent
     //restrict the draggable object inside another object(image)
     restrict: {
@@ -17,23 +19,21 @@ interact('.draggable')
       //endOnly: true,            //endOnly is used if we want the draggable object to
                                   //automatically move inside the defined bounds in the
                                   //event that it goes out.
-      elementRect: { top: 0, left: 0, bottom: 1, right: 1 } //define the part of the draggable object
+      elementRect: { top: -1, left: -0.4, bottom: 1, right: 1 } //define the part of the draggable object
                                                             //  that can go out of the draggable area.
                                                             //In this case the whole object cannot go out
                                                             //  of the area.
     },
-
     // call this function on every dragmove event
     onmove: function (event) 
     {
-      var div = document.getElementById('dive');     //for changing the element of the <div> tag
-                                                        //see comment 4 and 5 below.
+      var dive = document.getElementsByClassName("draggable dive");
       var target = event.target,
           // keep the dragged position in the data-x/data-y attributes
           x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
           y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
-      var textEl = event.target.querySelector('p');     //the text that will be rendered in the <p> tag
+      var textEl = target.querySelector('p');     //the text that will be rendered in the <p> tag
       // translate the element
       target.style.webkitTransform =
       target.style.transform =
@@ -43,60 +43,159 @@ interact('.draggable')
       target.setAttribute('data-x', x);
       target.setAttribute('data-y', y);
 
+
+      //Hacky anchor line that uses borderss. If there is a more preferable way of doing this delete 
+      //these lines.
+      /////////////////////////////////////////////////////////////////////////////////////////////
+      //This is the anchor line that follows the draggable object.
+      //It is pretty hacky because it uses css borders instead of lines.
+      var line = document.getElementsByClassName("line");
+      $(line[target.id-1]).width(x+50); //the width of the border adjust base on the x pos
+      $(line[target.id-1]).height(y+50);//the heght of the border adjust base on the y pos
+      // x+50 and y+50 so it won't go on top of the diver
+
+      var line2 = document.getElementsByClassName("line2");
+      $(line2[target.id-1]).width(x+40); //the width o
+      $(line2[target.id-1]).height(y-30);
+
+      //This is the line for the decompression stop or safety stop.
+      //Again, it is pretty hacky because it uses css borders.
+      var decomp_stop = document.getElementsByClassName("decomp_stop");
+      $(decomp_stop[target.id-1]).css('left',x+50+"px"); //Again like the line on top but instead of adjusting the width and height
+      //it is always aligned left with values xpos+50 pixels.
+
+      //boat graphics
+      var boat2 = document.getElementsByClassName("boat2");
+      $(boat2[target.id-1]).css('left',x+75+"px");
+      ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+      //For hiding the depth time label
+      //Ths line just nulls the depth_time_txt:before in css
+      var p = document.getElementsByClassName("depth_time_txt");
+      $(p[target.id-1]).addClass('no-before'); //removing the before pseudo content of <p>
+
+
       //minimize the coordinates by diving by 10
       //so the user will have enough room to drag the object or will make it easier.
       //Also the new x and y defined below will be the parameters
       //that will be use in the dive_algo functionalities.
-      x = Math.round(x/10);
+      x = Math.round(x/4.0909090909);           //maximum time of 220mins
       y = Math.round(y/10);
       
       //show the time = x and depth = y coordinates and status of dive
-      textEl && (textEl.textContent = 'time = ' + x + '\n' +
-         'depth = ' + y);
+      textEl && (textEl.textContent = 'Time = ' + x + '\n' +
+         'Depth = ' + y);
 
-      Dive_Status(event,x,y); //get the status of dive
+      //for a more conservative dive status
+      x = x + 1;
+      y = y + 1;
+      //var width = $('#main').width();
+      //The logic behind the implementation of multiple dive status
+      if(dive.length == 1)  //if there is only ONE dive
+      {        
+        dive[target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));      //set appropriate pressure group
+        Dive_Status(target.id-1,x,y); //get the status of dive
+      }
+      else
+      {
+        if(target.id-1 == 0)  //If there is multiple dives and I'm moving the first dive
+        {
+          dive[target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));
+          Dive_Status(target.id-1,x,y);
+        }
+        else            //else other instances except the first dive
+        {
+          var previousPG = dive[target.id-2].getAttribute("data-pg");       //get the PG of previous dive
+          var surfaceInt = document.getElementsByClassName("surface_interval");
+          //reduce pressure group after surface interval
+          //Not sure about this:*********************************************************************************************************
+          var PGafterSI = Reduce_PG(previousPG, surfaceInt[target.id-2].value); //surfaceInt[this]
+          x = x + RNT(PGafterSI,y);
+          dive[target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));        //dive[this]
+          surfaceInt[target.id-2].setAttribute("data-rpg",PGafterSI);           //surfaceInt[this]
+          Dive_Status(target.id-1,x,y);
+        }
+        Update(target.id);  //update the next dives
+      }  
     }
 });
 
-function Dive_Status(event,x,y)
+function Dive_Status(i,x,y)
 {
+  //Dive status updates the diver,anchor line, and decomp_stop line status.
   
+    var dive = document.getElementsByClassName("draggable dive");
+
+    ///////////////////////////////////////////////////////////////////////
+    var line = document.getElementsByClassName("line");
+    var line2 = document.getElementsByClassName("line2");
+    var decomp_stop = document.getElementsByClassName("decomp_stop");
+    ///////////////////////////////////////////////////////////////////////
 
       if(Bad_DIVE(x,y))
       {
         //change to represent the bad dive.
-        event.target.style.backgroundColor='#CC3300';
-        event.target.style.backgroundImage="url('diver-octopus.gif')";
+        dive[i].style.backgroundColor='#CC3300';
+        dive[i].style.backgroundImage="url('diver-octopus.gif')";
+
+        ///////////////////////////////////////////////////////////////////
+        line[i].style.borderColor='#CC3300';
+        line2[i].style.borderRightColor='#CC3300';
+        decomp_stop[i].style.borderRightColor='#CC3300';
+        decomp_stop[i].style.borderBottomColor='#CC3300';
+        ///////////////////////////////////////////////////////////////////
       }
       else if(Warning_DIVE(x,y))
       {
          //change to represent the warning dive
-         event.target.style.backgroundColor='#CC6600';
-         event.target.style.backgroundImage="url('animated-diver-2.gif')";
+         dive[i].style.backgroundColor='#CC6600';
+         dive[i].style.backgroundImage="url('animated-diver-2.gif')";
+
+         //////////////////////////////////////////////////////////////////
+         line[i].style.borderColor='#CC6600';
+         line2[i].style.borderRightColor='#CC6600';
+         decomp_stop[i].style.borderRightColor='#CC6600';
+         decomp_stop[i].style.borderBottomColor='#CC6600';
+         /////////////////////////////////////////////////////////////////
       }
       else
         {
           //change to represent the good dive
-          event.target.style.backgroundColor='#339933';
-          event.target.style.backgroundImage="url('animated-diver-2.gif')";
+          dive[i].style.backgroundColor='#339933';
+          dive[i].style.backgroundImage="url('animated-diver-2.gif')";
+
+          ////////////////////////////////////////////////////////////////
+          line[i].style.borderColor='#339933';
+          line2[i].style.borderRightColor='#339933';
+          decomp_stop[i].style.borderRightColor='#339933';
+          decomp_stop[i].style.borderBottomColor='#339933';
+          ///////////////////////////////////////////////////////////////
         }
+
+    /////////////////////////////////////////////////////////////////////
+    line[i].style.borderTopColor='transparent'; //keep this transparent
+    line[i].style.backgroundColor='transparent';//keep this transparent
+    line[i].style.borderRightColor='transparent';//keep this transparent
+    /////////////////////////////////////////////////////////////////////
 }
 
 function Bad_DIVE(time,depth)
 {
-	var a = 108.9022305174;
-	var b = -0.4437192799;
+  var a = 105.4459074484564;
+  var b = -0.4437192799;
 
-	return (depth > (a*(Math.pow(time,b))));
+  return (depth > (a*(Math.pow(time,b))));
 }
 
 function Warning_DIVE(time,depth)
 {
-	var a = 113.95854764967993;
-	var b = -0.48150981158021355;
-	if(depth>=30)		
-		return true;	//if depth is over 30meters then return warning
-	return ((depth > (a*(Math.pow(time,b))))); 
+  var a = 113.95854764967993;
+  var b = -0.48150981158021355;
+  if(depth>=30)   
+    return true;  //if depth is over 30meters then return warning
+  return ((depth > (a*(Math.pow(time,b))))); 
 }
 
 function Pressure_GROUP(time,depth)
@@ -109,7 +208,7 @@ function Pressure_GROUP(time,depth)
     var c = -1.0231048129283549;
 
     var PG = s * Math.exp(-0.5 * (Math.pow(((Math.log(time) - m) / n), 2) + Math.pow(((Math.log(depth) - q) / r), 2))) + c;
-    var number = Math.round(PG);
+    var number = Math.round(PG)-1;
 
     if (number < 1) {
         return 1;
@@ -129,7 +228,7 @@ function Reduce_PG(previousPG,surface_Interval)
     var c = 0.82154053080283274;
 
     var reducedPG = s * Math.exp(-0.5 * (Math.pow(((previousPG - m) / n), 2) + Math.pow((surface_Interval - q) / r, 2))) + c;
-    var number = Math.round(reducedPG);
+    var number = Math.round(reducedPG)-1;
 
     if (number < 1) {
         return 1;
@@ -153,40 +252,237 @@ function RNT(reducedPG,depth)
 
 function Add_Dive()
 {
-    var newContainer = document.createElement("div");
-    var newDive = document.createElement("div");
-    var main = document.getElementById("main");
-    newContainer.id = "container";
-    newDive.id = "dive";
-    newDive.className = "draggable";
-    newDive.innerHTML = '<strong><p></p></strong>';
-    newContainer.align = "left";
+//Add_Dive creates all elements that is required to create another dive. Once all the elements are created 
+//it adds it to the "main" div to be rendered in the screen.
+//This uses JQuery.
+    var newContainer = document.createElement("div");                    //new div tag
+    var newDive = document.createElement("div");                        //new div tag
+    var newDiveId = document.getElementsByClassName("draggable dive");  //get diver
 
-    $(main).append(newContainer);     // Append new containers
-    $(newContainer).append(newDive);    // Append draggable diver to new container
+    newContainer.className = "container";                             //set newContainer class
+    newContainer.align = "left";                                      //align the newContainer
+    
+    newDive.id = newDiveId.length + 1;                              //set newDive id
+    newDive.className = "draggable dive";                           //set newDive classNames
+    newDive.setAttribute("data-pg","1");
+    newDive.innerHTML = '<div id="time_depth"><strong><p class="depth_time_txt"></p></strong></div>';  //show newDive depth and time
+
+    //If going to change how the anchor line works, better delete this lines
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //Anchor line that uses bordersss
+    var newline = document.createElement("div");                        //create new dynamic anchor line
+    var newline2 = document.createElement("div");
+    var newdecomp_stop = document.createElement("div");
+
+    newline.className = "line"; //set the class of the anchor line
+    newline2.className = "line2"
+
+    newdecomp_stop.className = "decomp_stop";   //set the class of decomp_stop (a transparent box with colored borders)
+
+    var boat1 = document.createElement("div");
+    var boat2 = document.createElement("div");
+    boat1.className = "boat1";
+    boat2.className = "boat2";
+    $(newline).append(newline2,boat2,newdecomp_stop);          //add decomp_stop to line
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    //***************************Temporary Surface interval interface*******************************
+    var SurfaceInt = document.createElement("input")
+    
+    var SurfaceInt = document.createElement("div");
+    var label = document.createElement("h2");
+    var input = document.createElement("input");
+    var confirm = document.createElement("button");
+    var t = document.createTextNode("Confirm");
+    SurfaceInt.className = "SI";
+
+    input.className = "surface_interval";
+    input.value = 60;
+    input.setAttribute("data-rpg", "1");
+    input.type = "text";
+    input.style.display = 'none';
+
+
+    confirm.id = "confirm";
+    $(confirm).append(t);
+    confirm.style.display = 'none';
+    label.innerHTML = "Surface Interval: " + input.value + "min.";
+
+    label.onclick = function() { input.style.display = 'block';
+                                 confirm.style.display = 'block'; }
+
+    confirm.onclick = function() {  if(input.value<=0)
+                                    {alert("Surface Interval cannot be 0min.");}
+                                    else
+                                    {
+                                      input.style.display = 'none';
+                                      confirm.style.display = 'none'; 
+                                      label.innerHTML = "Surface Interval: " + input.value + "min.";
+                                      Update(newDive.id-1);
+                                    }
+                                  }
+    
+
+    $(SurfaceInt).append(label,input,confirm);
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var width = $(main).width();
+    $(main).width(width + 1000 + 500);
+
+    $(newContainer).append(boat1, newline, newDive);    ///newline = anchor line that uses bordersss
+    $(main).append(SurfaceInt, newContainer);
+    
+
+    //for automatic scrolling when adding dive
+   $('html, body').animate({
+            scrollLeft: width+1000+500});
 }
 
-//Future problems:
-/*
-  1. interact onstart() function does not seem to work?
+function Delete_Dive()
+{
+  var dive = document.getElementsByClassName("draggable dive");
+  var container = document.getElementsByClassName("container");
+  var si = document.getElementsByClassName("SI")
+  var last = dive.length;
+  if(dive.length != 1)
+  {
+    $(container[last-1]).remove();
+    $(si[last-2]).remove();
+    var width = $(main).width();
+    $(main).width(width - 1000 - 500);
 
-  2. figure out how to implement multiple dives + done.
+  }
+}
 
-  3. surface interval. Possibly by using interact resize?
+function Update(curr)
+{ 
+  var dive = document.getElementsByClassName("draggable dive");
+  var SInt = document.getElementsByClassName("surface_interval");
+  var i = curr;
+  {
+    while(curr < dive.length)
+    {
+      var pg = dive[curr-1].getAttribute("data-pg");
+      var si = SInt[curr-1].value;
+      var rpg = Reduce_PG(pg,si);
+      var x = dive[curr].getAttribute("data-x");
+      var y = dive[curr].getAttribute("data-y");
 
-  4. if multiple dives are in the page the object
-    can be drag and the time and depth are updating
-    but the status of the dive will not update for 
-    all the dives except the first one. Moving the
-    dive#2,dive#3... will change the status of the
-    dive#1???
-    Possible Fix?:
-      * does div elements have index(div[i])?if so we can iterate through that
-        and update the status of the dives.
+      //for a more conservative results
+      x = Math.round(x/4.0909090909)+1;
+      y = Math.round(y/10)+1;
 
-  5. make a seperate function for setting the <div> elements
-    to show if it is bc
-  6. RNT functionality
+      x = x + RNT(rpg,y);
+      dive[curr].setAttribute("data-pg",Pressure_GROUP(x,y))
+      SInt[curr-1].setAttribute("data-rpg",rpg);
+      Dive_Status(curr,x+1,y);
+      curr++;
+    }
+  }
+}
 
-  *that's it for now...
-*/
+function Load_Dive()
+{
+    var DiveObjects = [{"fields": {"diveplan": 1, "dive_id": 1, "depth": 100, "surface_interval": 6, "time": 40}, "model": "Dives.dive", "pk": 26}, {"fields": {"diveplan": 1, "dive_id": 2, "depth": 200, "surface_interval": 13, "time": 100}, "model": "Dives.dive", "pk": 27}, {"fields": {"diveplan": 1, "dive_id": 3, "depth": 300, "surface_interval": 13, "time": 160}, "model": "Dives.dive", "pk": 27}, {"fields": {"diveplan": 1, "dive_id": 4, "depth": 400, "surface_interval": 13, "time": 200}, "model": "Dives.dive", "pk": 27}];
+    Set_Dive(DiveObjects[0].fields.dive_id, DiveObjects[0].fields.time, DiveObjects[0].fields.depth)
+    for (i = 1; i < DiveObjects.length; i++){
+        Add_Dive();
+        Set_Dive(DiveObjects[i].fields.dive_id, DiveObjects[i].fields.time, DiveObjects[i].fields.depth)
+    }
+
+}
+
+
+function Set_Dive(dive_id, x, y)
+{
+  var dive = document.getElementsByClassName("draggable dive");
+  var target = document.getElementById(dive_id);
+
+  var textEl = target.querySelector('p');     //the text that will be rendered in the <p> tag
+  // translate the element
+  target.style.webkitTransform =
+  target.style.transform =
+    'translate(' + x + 'px, ' + y + 'px)';
+
+  // update the position attributes
+  target.setAttribute('data-x', x);
+  target.setAttribute('data-y', y);
+
+
+  //Hacky anchor line that uses borderss. If there is a more preferable way of doing this delete 
+  //these lines.
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  //This is the anchor line that follows the draggable object.
+  //It is pretty hacky because it uses css borders instead of lines.
+  var line = document.getElementsByClassName("line");
+  $(line[target.id-1]).width(x+50); //the width of the border adjust base on the x pos
+  $(line[target.id-1]).height(y+50);//the heght of the border adjust base on the y pos
+  // x+50 and y+50 so it won't go on top of the diver
+
+  var line2 = document.getElementsByClassName("line2");
+  $(line2[target.id-1]).width(x+40); //the width o
+  $(line2[target.id-1]).height(y-30);
+
+  //This is the line for the decompression stop or safety stop.
+  //Again, it is pretty hacky because it uses css borders.
+  var decomp_stop = document.getElementsByClassName("decomp_stop");
+  $(decomp_stop[target.id-1]).css('left',x+50+"px"); //Again like the line on top but instead of adjusting the width and height
+  //it is always aligned left with values xpos+50 pixels.
+
+  //boat graphics
+  var boat2 = document.getElementsByClassName("boat2");
+  $(boat2[target.id-1]).css('left',x+75+"px");
+  ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+  //For hiding the depth time label
+  //Ths line just nulls the depth_time_txt:before in css
+  var p = document.getElementsByClassName("depth_time_txt");
+  $(p[target.id-1]).addClass('no-before'); //removing the before pseudo content of <p>
+
+
+  //minimize the coordinates by diving by 10
+  //so the user will have enough room to drag the object or will make it easier.
+  //Also the new x and y defined below will be the parameters
+  //that will be use in the dive_algo functionalities.
+  x = Math.round(x/4.0909090909);           //maximum time of 220mins
+  y = Math.round(y/10);
+  
+  //show the time = x and depth = y coordinates and status of dive
+  textEl && (textEl.textContent = 'Time = ' + x + '\n' +
+     'Depth = ' + y);
+
+  //for a more conservative dive status
+  x = x + 1;
+  y = y + 1;
+  //var width = $('#main').width();
+  //The logic behind the implementation of multiple dive status
+  if(dive.length == 1)  //if there is only ONE dive
+  {        
+    dive[target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));      //set appropriate pressure group
+    Dive_Status(target.id-1,x,y); //get the status of dive
+  }
+  else
+  {
+    if(target.id-1 == 0)  //If there is multiple dives and I'm moving the first dive
+    {
+      dive[target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));
+      Dive_Status(target.id-1,x,y);
+    }
+    else            //else other instances except the first dive
+    {
+      var previousPG = dive[target.id-2].getAttribute("data-pg");       //get the PG of previous dive
+      var surfaceInt = document.getElementsByClassName("surface_interval");
+      //reduce pressure group after surface interval
+      //Not sure about this:*********************************************************************************************************
+      var PGafterSI = Reduce_PG(previousPG, surfaceInt[target.id-2].value); //surfaceInt[this]
+      x = x + RNT(PGafterSI,y);
+      dive[target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));        //dive[this]
+      surfaceInt[target.id-2].setAttribute("data-rpg",PGafterSI);           //surfaceInt[this]
+      Dive_Status(target.id-1,x,y);
+    }
+    Update(target.id);  //update the next dives
+  }  
+}
