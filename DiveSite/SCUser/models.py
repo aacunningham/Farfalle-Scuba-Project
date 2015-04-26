@@ -31,6 +31,7 @@ class SCUserManager(BaseUserManager):
         user = self.create_user(
             email=email,
             password=password,
+            confirm_password=password,
             first_name=first_name,
             last_name=last_name,
         )
