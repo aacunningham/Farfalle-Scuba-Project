@@ -13,7 +13,7 @@ class DiveCreationForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(DiveCreationForm, self).clean()
         curr_dive_plan = cleaned_data.get('diveplan')
-        cleaned_data['dive_id'] = str(curr_dive_plan.dive_set.all().count())
+        cleaned_data['dive_id'] = str(curr_dive_plan.dive_set.all().count() + 1)
         return cleaned_data
 
 
