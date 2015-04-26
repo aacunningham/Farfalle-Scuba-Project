@@ -33,7 +33,7 @@ interact('.draggable')
           x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
           y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
-      var textEl = event.target.querySelector('p');     //the text that will be rendered in the <p> tag
+      var textEl = target.querySelector('p');     //the text that will be rendered in the <p> tag
       // translate the element
       target.style.webkitTransform =
       target.style.transform =
@@ -50,23 +50,23 @@ interact('.draggable')
       //This is the anchor line that follows the draggable object.
       //It is pretty hacky because it uses css borders instead of lines.
       var line = document.getElementsByClassName("line");
-      $(line[event.target.id-1]).width(x+50); //the width of the border adjust base on the x pos
-      $(line[event.target.id-1]).height(y+50);//the heght of the border adjust base on the y pos
+      $(line[target.id-1]).width(x+50); //the width of the border adjust base on the x pos
+      $(line[target.id-1]).height(y+50);//the heght of the border adjust base on the y pos
       // x+50 and y+50 so it won't go on top of the diver
 
       var line2 = document.getElementsByClassName("line2");
-      $(line2[event.target.id-1]).width(x+40); //the width o
-      $(line2[event.target.id-1]).height(y-30);
+      $(line2[target.id-1]).width(x+40); //the width o
+      $(line2[target.id-1]).height(y-30);
 
       //This is the line for the decompression stop or safety stop.
       //Again, it is pretty hacky because it uses css borders.
       var decomp_stop = document.getElementsByClassName("decomp_stop");
-      $(decomp_stop[event.target.id-1]).css('left',x+50+"px"); //Again like the line on top but instead of adjusting the width and height
+      $(decomp_stop[target.id-1]).css('left',x+50+"px"); //Again like the line on top but instead of adjusting the width and height
       //it is always aligned left with values xpos+50 pixels.
 
       //boat graphics
       var boat2 = document.getElementsByClassName("boat2");
-      $(boat2[event.target.id-1]).css('left',x+75+"px");
+      $(boat2[target.id-1]).css('left',x+75+"px");
       ///////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -74,7 +74,7 @@ interact('.draggable')
       //For hiding the depth time label
       //Ths line just nulls the depth_time_txt:before in css
       var p = document.getElementsByClassName("depth_time_txt");
-      $(p[event.target.id-1]).addClass('no-before'); //removing the before pseudo content of <p>
+      $(p[target.id-1]).addClass('no-before'); //removing the before pseudo content of <p>
 
 
       //minimize the coordinates by diving by 10
@@ -95,29 +95,29 @@ interact('.draggable')
       //The logic behind the implementation of multiple dive status
       if(dive.length == 1)  //if there is only ONE dive
       {        
-        dive[event.target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));      //set appropriate pressure group
-        Dive_Status(event.target.id-1,x,y); //get the status of dive
+        dive[target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));      //set appropriate pressure group
+        Dive_Status(target.id-1,x,y); //get the status of dive
       }
       else
       {
-        if(event.target.id-1 == 0)  //If there is multiple dives and I'm moving the first dive
+        if(target.id-1 == 0)  //If there is multiple dives and I'm moving the first dive
         {
-          dive[event.target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));
-          Dive_Status(event.target.id-1,x,y);
+          dive[target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));
+          Dive_Status(target.id-1,x,y);
         }
         else            //else other instances except the first dive
         {
-          var previousPG = dive[event.target.id-2].getAttribute("data-pg");       //get the PG of previous dive
+          var previousPG = dive[target.id-2].getAttribute("data-pg");       //get the PG of previous dive
           var surfaceInt = document.getElementsByClassName("surface_interval");
           //reduce pressure group after surface interval
           //Not sure about this:*********************************************************************************************************
-          var PGafterSI = Reduce_PG(previousPG, surfaceInt[event.target.id-2].value); //surfaceInt[this]
+          var PGafterSI = Reduce_PG(previousPG, surfaceInt[target.id-2].value); //surfaceInt[this]
           x = x + RNT(PGafterSI,y);
-          dive[event.target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));        //dive[this]
-          surfaceInt[event.target.id-2].setAttribute("data-rpg",PGafterSI);           //surfaceInt[this]
-          Dive_Status(event.target.id-1,x,y);
+          dive[target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));        //dive[this]
+          surfaceInt[target.id-2].setAttribute("data-rpg",PGafterSI);           //surfaceInt[this]
+          Dive_Status(target.id-1,x,y);
         }
-        Update(event.target.id);  //update the next dives
+        Update(target.id);  //update the next dives
       }  
     }
 });
@@ -258,9 +258,7 @@ function Add_Dive()
     var newContainer = document.createElement("div");                    //new div tag
     var newDive = document.createElement("div");                        //new div tag
     var newDiveId = document.getElementsByClassName("draggable dive");  //get diver
-    var newContainerId = document.getElementsByClassName("container");  //get container
 
-    newContainer.id = newContainerId.length + 1;                      //set newContainer id
     newContainer.className = "container";                             //set newContainer class
     newContainer.align = "left";                                      //align the newContainer
     
@@ -277,19 +275,14 @@ function Add_Dive()
     var newdecomp_stop = document.createElement("div");
 
     newline.className = "line"; //set the class of the anchor line
-    newline.id = newDive.id;    //set the id of the anchor line
     newline2.className = "line2"
-    newline2.id = newDive.id;
 
     newdecomp_stop.className = "decomp_stop";   //set the class of decomp_stop (a transparent box with colored borders)
-    newdecomp_stop.id = newDive.id;             //set the id of the decomp_stop
 
     var boat1 = document.createElement("div");
     var boat2 = document.createElement("div");
     boat1.className = "boat1";
-    boat1.id = newDive.id;
     boat2.className = "boat2";
-    boat2.id = newDive.id;
     $(newline).append(newline2,boat2,newdecomp_stop);          //add decomp_stop to line
     ////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -304,7 +297,6 @@ function Add_Dive()
     var t = document.createTextNode("Confirm");
     SurfaceInt.className = "SI";
 
-    input.id = newDive.id;
     input.className = "surface_interval";
     input.value = 60;
     input.setAttribute("data-rpg", "1");
@@ -388,4 +380,109 @@ function Update(curr)
       curr++;
     }
   }
+}
+
+function Load_Dive()
+{
+    var DiveObjects = [{"fields": {"diveplan": 1, "dive_id": 1, "depth": 100, "surface_interval": 6, "time": 40}, "model": "Dives.dive", "pk": 26}, {"fields": {"diveplan": 1, "dive_id": 2, "depth": 200, "surface_interval": 13, "time": 100}, "model": "Dives.dive", "pk": 27}, {"fields": {"diveplan": 1, "dive_id": 3, "depth": 300, "surface_interval": 13, "time": 160}, "model": "Dives.dive", "pk": 27}, {"fields": {"diveplan": 1, "dive_id": 4, "depth": 400, "surface_interval": 13, "time": 200}, "model": "Dives.dive", "pk": 27}];
+    Set_Dive(DiveObjects[0].fields.dive_id, DiveObjects[0].fields.time, DiveObjects[0].fields.depth)
+    for (i = 1; i < DiveObjects.length; i++){
+        Add_Dive();
+        Set_Dive(DiveObjects[i].fields.dive_id, DiveObjects[i].fields.time, DiveObjects[i].fields.depth)
+    }
+
+}
+
+
+function Set_Dive(dive_id, x, y)
+{
+  var dive = document.getElementsByClassName("draggable dive");
+  var target = document.getElementById(dive_id);
+
+  var textEl = target.querySelector('p');     //the text that will be rendered in the <p> tag
+  // translate the element
+  target.style.webkitTransform =
+  target.style.transform =
+    'translate(' + x + 'px, ' + y + 'px)';
+
+  // update the position attributes
+  target.setAttribute('data-x', x);
+  target.setAttribute('data-y', y);
+
+
+  //Hacky anchor line that uses borderss. If there is a more preferable way of doing this delete 
+  //these lines.
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  //This is the anchor line that follows the draggable object.
+  //It is pretty hacky because it uses css borders instead of lines.
+  var line = document.getElementsByClassName("line");
+  $(line[target.id-1]).width(x+50); //the width of the border adjust base on the x pos
+  $(line[target.id-1]).height(y+50);//the heght of the border adjust base on the y pos
+  // x+50 and y+50 so it won't go on top of the diver
+
+  var line2 = document.getElementsByClassName("line2");
+  $(line2[target.id-1]).width(x+40); //the width o
+  $(line2[target.id-1]).height(y-30);
+
+  //This is the line for the decompression stop or safety stop.
+  //Again, it is pretty hacky because it uses css borders.
+  var decomp_stop = document.getElementsByClassName("decomp_stop");
+  $(decomp_stop[target.id-1]).css('left',x+50+"px"); //Again like the line on top but instead of adjusting the width and height
+  //it is always aligned left with values xpos+50 pixels.
+
+  //boat graphics
+  var boat2 = document.getElementsByClassName("boat2");
+  $(boat2[target.id-1]).css('left',x+75+"px");
+  ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+  //For hiding the depth time label
+  //Ths line just nulls the depth_time_txt:before in css
+  var p = document.getElementsByClassName("depth_time_txt");
+  $(p[target.id-1]).addClass('no-before'); //removing the before pseudo content of <p>
+
+
+  //minimize the coordinates by diving by 10
+  //so the user will have enough room to drag the object or will make it easier.
+  //Also the new x and y defined below will be the parameters
+  //that will be use in the dive_algo functionalities.
+  x = Math.round(x/4.0909090909);           //maximum time of 220mins
+  y = Math.round(y/10);
+  
+  //show the time = x and depth = y coordinates and status of dive
+  textEl && (textEl.textContent = 'Time = ' + x + '\n' +
+     'Depth = ' + y);
+
+  //for a more conservative dive status
+  x = x + 1;
+  y = y + 1;
+  //var width = $('#main').width();
+  //The logic behind the implementation of multiple dive status
+  if(dive.length == 1)  //if there is only ONE dive
+  {        
+    dive[target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));      //set appropriate pressure group
+    Dive_Status(target.id-1,x,y); //get the status of dive
+  }
+  else
+  {
+    if(target.id-1 == 0)  //If there is multiple dives and I'm moving the first dive
+    {
+      dive[target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));
+      Dive_Status(target.id-1,x,y);
+    }
+    else            //else other instances except the first dive
+    {
+      var previousPG = dive[target.id-2].getAttribute("data-pg");       //get the PG of previous dive
+      var surfaceInt = document.getElementsByClassName("surface_interval");
+      //reduce pressure group after surface interval
+      //Not sure about this:*********************************************************************************************************
+      var PGafterSI = Reduce_PG(previousPG, surfaceInt[target.id-2].value); //surfaceInt[this]
+      x = x + RNT(PGafterSI,y);
+      dive[target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));        //dive[this]
+      surfaceInt[target.id-2].setAttribute("data-rpg",PGafterSI);           //surfaceInt[this]
+      Dive_Status(target.id-1,x,y);
+    }
+    Update(target.id);  //update the next dives
+  }  
 }
