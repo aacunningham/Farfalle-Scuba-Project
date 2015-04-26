@@ -17,8 +17,7 @@ class DivePlan(models.Model):
 
 class DiveManager(models.Manager):
     def create_dive(self, time, depth, surface_interval, diveplan):
-        currDivePlan = DivePlan.objects.get(pk=diveplan)
-        totalDives = currDivePlan.dive_set.all().count()
+        totalDives = diveplan.dive_set.all().count()
         dive_id = str(totalDives + 1)
         dive = self.create(dive_id=dive_id, time=time, depth=depth, surface_interval=surface_interval, diveplan=currDivePlan)
         return dive

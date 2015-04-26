@@ -1,0 +1,33 @@
+{% load staticfiles %}
+<!DOCTYPE HTML>
+<html>
+	<head>
+        <link rel="stylesheet" type="text/css" href="{% static "style.css" %}">
+        <script src="{% static "interact.js" %}"></script>
+        <script src="{% static "functions.js" %}"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <title>Farfalle</title>
+	</head>
+
+	<body>
+		<button onclick="Add_Dive()">Add Dive</button>
+		<button onclick="Delete_Dive()">Delete Dive</button>
+        <button onclick="Request_Dive(1)">Load Dive</button>
+        <button onclick="Save_Dive()">Save Dive</button>
+		<div id="main" align ="center">
+			<div class="container" align ="left">
+				<div class="boat1"></div>
+				<div class="line">
+					<div class="line2"></div>
+					<div class="boat2"></div>
+					<div class="decomp_stop"></div>
+				</div>
+				<div id="1" class="draggable dive" data-pg="1">
+					<div id="time_depth">
+						<strong><p class="depth_time_txt"></p></strong>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,191 @@
+
+/*
+drag-me is the id for the draggable object
+This is the starting style for the diver object, it
+will be change in the function.js depending on the status
+of dive
+*/
+
+.dive {
+  width: 100px;
+  height:100px;
+  background-color:#339933; 
+
+  background-image: url("animated-diver-2.gif");
+  position: absolute;
+  color: white;
+  border-radius: 10em;
+  z-index: 1;
+
+  -webkit-transform: translate(0px, 0px);
+          transform: translate(0px, 0px);
+}
+
+
+#time_depth{
+  width: 110px;
+  height: 80px;
+  top: 10px;
+  background-color: black;
+  position: relative;
+  left: 120px;
+  text-align: left; 
+  font-family: Arial, Helvetica, sans-serif; 
+  -moz-border-radius:    10px;
+   -webkit-border-radius: 10px;
+   border-radius:         10px;
+   text-align: center;
+   font-size: 120%;
+   font-weight: bolder;
+   display: inline-block;
+   
+}
+
+#time_depth:before {
+   content:"";
+   position: absolute;
+   right: 100%;
+   top: 35%;
+   width: 0;
+   height: 0;
+   border-top: 13px solid transparent;
+   border-right: 10px solid black;
+   border-bottom: 13px solid transparent;
+}
+
+
+.container {
+    width: 1000px;
+    height: 520px;  
+    
+    float: left; 
+    overflow: visible;
+    top: 100px;
+  }
+
+#main {
+  width: 1000px;
+  position: relative;
+  margin-top:100px;
+  overflow: visible;
+  background-color: #336699;
+  padding-left: 150px;
+  
+  top:100px;
+}
+
+.SI {
+  float:left;
+  width: 500px;  
+  height: 520px;
+  position:relative;
+  top: -50px;
+}
+
+#confirm {
+  position: inherit;
+}
+
+.surface_interval {
+  width: 50px;
+  float: center;
+}
+h2 {
+text-decoration:underline;
+text-align:center;
+}
+
+h2:hover {
+  cursor: pointer;
+}
+
+#confirm:hover {
+  cursor: pointer;
+}
+
+#add {
+  position: fixed;
+  margin-left: 1500px;
+  margin-top: -90px;
+  height:50px;
+  width:50px;
+}
+
+#delete {
+   position: fixed;
+   margin-left: 1500px;
+   margin-top: -40px;
+   height:50px;
+   width:50px;
+}
+
+.depth_time_txt:before {
+  content: "Time = 0 Depth = 0"; 
+}
+
+.depth_time_txt.no-before:before {
+  content: none;
+}
+
+.boat1 {
+  position: absolute;
+  top: -90px;
+  width: 100px;
+  height: 100px;
+  z-index: 1;
+  background-color: black;
+}
+
+.boat2 {
+  position: absolute;
+  top: -80px;
+  width: 100px;
+  height: 100px;
+  z-index: 1;
+  left: 250px;
+  background-color: black;
+  left: 50px;
+}
+
+
+.line {
+  border-style:solid;
+  border-color: #339933;
+  border-top-color: transparent;
+  background-color: transparent;
+  border-right-color: transparent;
+  border-width: 10px;
+  position: absolute;
+  border-radius: 10px;
+  top:-20px;
+  margin-left: 50px;
+}
+
+.line2 {
+  border-style:solid;
+  border-color: #339933;
+  border-width: 10px;
+  position: absolute;
+  border-radius: 10px;
+  top: 70px;
+  
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+}
+
+.decomp_stop {
+  width: 50px;
+  height: 70px;
+  position: absolute;
+  background-color: transparent;
+  border-color: #339933;
+  border-style: solid;
+  border-width: 10px;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  top: -10px;
+}
+
+body{
+background-image: url("background.png");}
