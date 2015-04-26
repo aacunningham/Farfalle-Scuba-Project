@@ -23,7 +23,7 @@ of dive
 
 
 #time_depth{
-  width: 110px;
+  width: 150px;
   height: 80px;
   top: 10px;
   background-color: black;
@@ -34,11 +34,10 @@ of dive
   -moz-border-radius:    10px;
    -webkit-border-radius: 10px;
    border-radius:         10px;
-   text-align: center;
+   
    font-size: 120%;
    font-weight: bolder;
    display: inline-block;
-   
 }
 
 #time_depth:before {
@@ -53,11 +52,11 @@ of dive
    border-bottom: 13px solid transparent;
 }
 
-
 .container {
-    width: 1000px;
+    max-width: 1000px;
+    min-width: 1000px;
     height: 520px;  
-    
+    background-color: navy;
     float: left; 
     overflow: visible;
     top: 100px;
@@ -71,7 +70,7 @@ of dive
   background-color: #336699;
   padding-left: 150px;
   
-  top:100px;
+  top:30px;
 }
 
 .SI {
@@ -119,14 +118,6 @@ h2:hover {
    width:50px;
 }
 
-.depth_time_txt:before {
-  content: "Time = 0 Depth = 0"; 
-}
-
-.depth_time_txt.no-before:before {
-  content: none;
-}
-
 .boat1 {
   position: absolute;
   top: -90px;
@@ -134,6 +125,7 @@ h2:hover {
   height: 100px;
   z-index: 1;
   background-color: black;
+  margin-left: -30px;
 }
 
 .boat2 {
@@ -158,7 +150,7 @@ h2:hover {
   position: absolute;
   border-radius: 10px;
   top:-20px;
-  margin-left: 50px;
+  margin-left: 0px;
 }
 
 .line2 {
@@ -188,4 +180,4 @@ h2:hover {
 }
 
 body{
-background-image: url("background.png");}
+}

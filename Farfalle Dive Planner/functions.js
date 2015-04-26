@@ -19,7 +19,7 @@ interact('.draggable')
       //endOnly: true,            //endOnly is used if we want the draggable object to
                                   //automatically move inside the defined bounds in the
                                   //event that it goes out.
-      elementRect: { top: -1, left: -0.4, bottom: 1, right: 1 } //define the part of the draggable object
+      elementRect: { top: -1, left: 0, bottom: 1, right: 1 } //define the part of the draggable object
                                                             //  that can go out of the draggable area.
                                                             //In this case the whole object cannot go out
                                                             //  of the area.
@@ -70,13 +70,6 @@ interact('.draggable')
       ///////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-      //For hiding the depth time label
-      //Ths line just nulls the depth_time_txt:before in css
-      var p = document.getElementsByClassName("depth_time_txt");
-      $(p[event.target.id-1]).addClass('no-before'); //removing the before pseudo content of <p>
-
-
       //minimize the coordinates by diving by 10
       //so the user will have enough room to drag the object or will make it easier.
       //Also the new x and y defined below will be the parameters
@@ -85,8 +78,8 @@ interact('.draggable')
       y = Math.round(y/10);
       
       //show the time = x and depth = y coordinates and status of dive
-      textEl && (textEl.textContent = 'Time = ' + x + '\n' +
-         'Depth = ' + y);
+       textEl && (textEl.textContent = 'Time = ' + x + "min." + '\n' +
+         'Depth = ' + y + "m");
 
       //for a more conservative dive status
       x = x + 1;
@@ -299,6 +292,7 @@ function Add_Dive()
     
     var SurfaceInt = document.createElement("div");
     var label = document.createElement("h2");
+    label.className = "SIntTxt";
     var input = document.createElement("input");
     var confirm = document.createElement("button");
     var t = document.createTextNode("Confirm");
@@ -308,7 +302,8 @@ function Add_Dive()
     input.className = "surface_interval";
     input.value = 60;
     input.setAttribute("data-rpg", "1");
-    input.type = "text";
+    input.type = "number";
+    input.min = 1;
     input.style.display = 'none';
 
 
@@ -340,7 +335,7 @@ function Add_Dive()
 
     $(newContainer).append(boat1, newline, newDive);    ///newline = anchor line that uses bordersss
     $(main).append(SurfaceInt, newContainer);
-    
+    InitializeDive(newDive.id)
 
     //for automatic scrolling when adding dive
    $('html, body').animate({
@@ -367,6 +362,7 @@ function Update(curr)
 { 
   var dive = document.getElementsByClassName("draggable dive");
   var SInt = document.getElementsByClassName("surface_interval");
+  var SurfaceIntlabel = document.getElementsByClassName("SIntValue");
   var i = curr;
   {
     while(curr < dive.length)
@@ -382,10 +378,135 @@ function Update(curr)
       y = Math.round(y/10)+1;
 
       x = x + RNT(rpg,y);
-      dive[curr].setAttribute("data-pg",Pressure_GROUP(x,y))
-      SInt[curr-1].setAttribute("data-rpg",rpg);
+      dive[curr].setAttribute("data-pg",Pressure_GROUP(x,y));
       Dive_Status(curr,x+1,y);
       curr++;
     }
   }
+}
+
+function InitializeDive(curr)
+{
+  curr = curr-1;
+  var x = 0;
+  var y = 100;
+  var dive = document.getElementsByClassName("draggable dive");
+
+  //change the index to a parameter
+  dive[curr].setAttribute("data-x",x);
+  dive[curr].setAttribute("data-y",y);
+  dive[curr].style.webkitTransform =
+      dive[curr].style.transform =
+        'translate(' + x + 'px, ' + y + 'px)';
+
+  var line = document.getElementsByClassName("line");
+      $(line[curr]).width(x+50+"px"); //the width of the border adjust base on the x pos
+      $(line[curr]).height(y+50+"px");//the heght of the border adjust base on the y pos
+      // x+50 and y+50 so it won't go on top of the diver
+      
+      var line2 = document.getElementsByClassName("line2");
+      $(line2[curr]).width(x+40+"px"); //the width o
+      $(line2[curr]).height(y-30+"px");
+
+      //This is the line for the decompression stop or safety stop.
+      //Again, it is pretty hacky because it uses css borders.
+      var decomp_stop = document.getElementsByClassName("decomp_stop");
+      $(decomp_stop[curr]).css('left',x+50+"px"); //Again like the line on top but instead of adjusting the width and height
+      //it is always aligned left with values xpos+50 pixels.
+
+      //boat graphics
+      var boat2 = document.getElementsByClassName("boat2");
+      $(boat2[curr]).css('left',x+75+"px");
+      ///////////////////////////////////////////////////////////////////////////////////////////////
+
+      //For hiding the depth time label
+      //Ths line just nulls the depth_time_txt:before in css
+      var p = document.getElementsByClassName("depth_time_txt");
+      $(p[curr]).addClass('no-before'); //removing the before pseudo content of <p>
+
+
+      var container = document.getElementsByClassName("container");
+      $(container).width(x+250+"px"); 
+
+      x = Math.round(x/4.0909090909);
+      y = Math.round(y/10);
+      var textEl = dive[curr].querySelector('p');
+      textEl && (textEl.textContent = 'Time = ' + x + "min." + '\n' +
+         'Depth = ' + y + "m");
+      Update(curr);
+}
+
+//time depth, si
+//name of the whole dive and date
+function Import(curr,time,depth,si)
+{
+  var x = Math.round(time*4.0909090909);
+  var y = depth*10;
+  curr = curr-1;
+  var dive = document.getElementsByClassName("draggable dive");
+
+ //change the index to a parameter
+  dive[curr].setAttribute("data-x",x);
+  dive[curr].setAttribute("data-y",y);
+  dive[curr].style.webkitTransform =
+      dive[curr].style.transform =
+        'translate(' + x + 'px, ' + y + 'px)';
+
+  var line = document.getElementsByClassName("line");
+      $(line[curr]).width(x+50+"px"); //the width of the border adjust base on the x pos
+      $(line[curr]).height(y+50+"px");//the heght of the border adjust base on the y pos
+      // x+50 and y+50 so it won't go on top of the diver
+      
+      var line2 = document.getElementsByClassName("line2");
+      $(line2[curr]).width(x+40+"px"); //the width o
+      $(line2[curr]).height(y-30+"px");
+
+      //This is the line for the decompression stop or safety stop.
+      //Again, it is pretty hacky because it uses css borders.
+      var decomp_stop = document.getElementsByClassName("decomp_stop");
+      $(decomp_stop[curr]).css('left',x+50+"px"); //Again like the line on top but instead of adjusting the width and height
+      //it is always aligned left with values xpos+50 pixels.
+
+      //boat graphics
+      var boat2 = document.getElementsByClassName("boat2");
+      $(boat2[curr]).css('left',x+75+"px");
+      ///////////////////////////////////////////////////////////////////////////////////////////////
+
+      //For hiding the depth time label
+      //Ths line just nulls the depth_time_txt:before in css
+      var p = document.getElementsByClassName("depth_time_txt");
+      $(p[curr]).addClass('no-before'); //removing the before pseudo content of <p>
+
+
+      var container = document.getElementsByClassName("container");
+      $(container).width(x+250+"px"); 
+
+      x = Math.round(x/4.0909090909);
+      y = Math.round(y/10);
+      var textEl = dive[curr].querySelector('p');
+       textEl && (textEl.textContent = 'Time = ' + x + "min." + '\n' +
+         'Depth = ' + y + "m");
+      if(curr!=0)
+      {
+        var SurfaceInt = document.getElementsByClassName("surface_interval");
+        var SurfaceIntlabel = document.getElementsByClassName("SIntTxt");
+        SurfaceInt[curr-1].value = si;
+        SurfaceIntlabel[curr-1].innerHTML = "Surface Interval: " + SurfaceInt[curr-1].value + "min.";
+        Update(curr);
+      }
+      else
+      {
+        Dive_Status(curr,x,y);
+      }
+}
+
+function Import_Helper()
+{
+  Import(1,20,20,0);
+  Add_Dive(); 
+  Import(2,20,20,0);  //TO DO: need to check for the values of time depth and surface interval for validity.
+  Add_Dive(); 
+  Import(3,20,20,50);
+  Add_Dive(); 
+  Import(4,20,20,30);
 }
