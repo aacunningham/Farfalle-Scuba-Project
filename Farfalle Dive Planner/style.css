@@ -224,4 +224,16 @@ text-align:center;
   background-image: url("background.png");
   position: absolute;
   top: -60px;
+  z-index: -2;
+ }
+
+ h3 {
+  width: 100px;
+  position: relative;
+  top: 20px;
+  left: -10px;
+  font-color: white;
+  font-family: Arial, Helvetica, sans-serif; 
+  color: white;
+  font-size: 12pt;
  }

@@ -269,6 +269,7 @@ function Add_Dive()
     var newline = document.createElement("div");                        //create new dynamic anchor line
     var newline2 = document.createElement("div");
     var newdecomp_stop = document.createElement("div");
+    newdecomp_stop.innerHTML = '<h3>Time: 3min. Depth: 5m</h3>';
 
     newline.className = "line"; //set the class of the anchor line
     newline2.className = "line2"
@@ -279,6 +280,7 @@ function Add_Dive()
     var boat2 = document.createElement("div");
     boat1.className = "boat1";
     boat2.className = "boat2";
+
     $(newline).append(newline2,boat2,newdecomp_stop);          //add decomp_stop to line
     ////////////////////////////////////////////////////////////////////////////////////////////
 
