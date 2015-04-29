@@ -19,7 +19,7 @@ interact('.draggable')
       //endOnly: true,            //endOnly is used if we want the draggable object to
                                   //automatically move inside the defined bounds in the
                                   //event that it goes out.
-      elementRect: { top: -1, left: -0.4, bottom: 1, right: 1 } //define the part of the draggable object
+      elementRect: { top: -1, left: 0, bottom: 1, right: 1 } //define the part of the draggable object
                                                             //  that can go out of the draggable area.
                                                             //In this case the whole object cannot go out
                                                             //  of the area.
@@ -85,8 +85,8 @@ interact('.draggable')
       y = Math.round(y/10);
       
       //show the time = x and depth = y coordinates and status of dive
-      textEl && (textEl.textContent = 'Time = ' + x + '\n' +
-         'Depth = ' + y);
+      textEl && (textEl.textContent = 'Time = ' + x + 'min.' + '\n' +
+         'Depth = ' + y + 'm');
 
       //for a more conservative dive status
       x = x + 1;
@@ -137,34 +137,37 @@ function Dive_Status(i,x,y)
       if(Bad_DIVE(x,y))
       {
         //change to represent the bad dive.
-        dive[i].style.backgroundColor='#CC3300';
-        dive[i].style.backgroundImage="url('diver-octopus.gif')";
+        dive[i].style.backgroundColor='red';
+		    dive[i].style.borderColor='red';
+        dive[i].style.backgroundImage="url('diver.png')";
 
         ///////////////////////////////////////////////////////////////////
-        line[i].style.borderColor='#CC3300';
-        line2[i].style.borderRightColor='#CC3300';
-        decomp_stop[i].style.borderRightColor='#CC3300';
-        decomp_stop[i].style.borderBottomColor='#CC3300';
+        line[i].style.borderColor='red';
+        line2[i].style.borderRightColor='red';
+        decomp_stop[i].style.borderRightColor='red';
+        decomp_stop[i].style.borderBottomColor='red';
         ///////////////////////////////////////////////////////////////////
       }
       else if(Warning_DIVE(x,y))
       {
          //change to represent the warning dive
-         dive[i].style.backgroundColor='#CC6600';
-         dive[i].style.backgroundImage="url('animated-diver-2.gif')";
+         dive[i].style.backgroundColor='orange';
+		 dive[i].style.borderColor='orange';
+         dive[i].style.backgroundImage="url('diver.png')";
 
          //////////////////////////////////////////////////////////////////
-         line[i].style.borderColor='#CC6600';
-         line2[i].style.borderRightColor='#CC6600';
-         decomp_stop[i].style.borderRightColor='#CC6600';
-         decomp_stop[i].style.borderBottomColor='#CC6600';
+         line[i].style.borderColor='orange';
+         line2[i].style.borderRightColor='orange';
+         decomp_stop[i].style.borderRightColor='orange';
+         decomp_stop[i].style.borderBottomColor='orange';
          /////////////////////////////////////////////////////////////////
       }
       else
         {
           //change to represent the good dive
           dive[i].style.backgroundColor='#339933';
-          dive[i].style.backgroundImage="url('animated-diver-2.gif')";
+		  dive[i].style.borderColor='#339933';
+          dive[i].style.backgroundImage="url('diver.png')";
 
           ////////////////////////////////////////////////////////////////
           line[i].style.borderColor='#339933';
@@ -300,7 +303,7 @@ function Add_Dive()
     input.className = "surface_interval";
     input.value = 60;
     input.setAttribute("data-rpg", "1");
-    input.type = "text";
+    input.type = "number";
     input.style.display = 'none';
 
 
@@ -329,11 +332,12 @@ function Add_Dive()
 
     var width = $(main).width();
     $(main).width(width + 1000 + 500);
+    $('#sky').width(width + 1000 + 500);
 
     $(newContainer).append(boat1, newline, newDive);    ///newline = anchor line that uses bordersss
     $(main).append(SurfaceInt, newContainer);
     
-
+	 Set_Dive(newDive.id,0,10);
     //for automatic scrolling when adding dive
    $('html, body').animate({
             scrollLeft: width+1000+500});
@@ -351,7 +355,7 @@ function Delete_Dive()
     $(si[last-2]).remove();
     var width = $(main).width();
     $(main).width(width - 1000 - 500);
-
+    $('#sky').width(width - 1000 - 500);
   }
 }
 
@@ -384,7 +388,7 @@ function Update(curr)
 
 function Load_Dive()
 {
-    var DiveObjects = [{"fields": {"diveplan": 1, "dive_id": 1, "depth": 100, "surface_interval": 6, "time": 40}, "model": "Dives.dive", "pk": 26}, {"fields": {"diveplan": 1, "dive_id": 2, "depth": 200, "surface_interval": 13, "time": 100}, "model": "Dives.dive", "pk": 27}, {"fields": {"diveplan": 1, "dive_id": 3, "depth": 300, "surface_interval": 13, "time": 160}, "model": "Dives.dive", "pk": 27}, {"fields": {"diveplan": 1, "dive_id": 4, "depth": 400, "surface_interval": 13, "time": 200}, "model": "Dives.dive", "pk": 27}];
+    var DiveObjects = [{"fields": {"diveplan": 1, "dive_id": 1, "depth": 10, "surface_interval": 6, "time": 40}, "model": "Dives.dive", "pk": 26}, {"fields": {"diveplan": 1, "dive_id": 2, "depth": 20, "surface_interval": 13, "time": 100}, "model": "Dives.dive", "pk": 27}, {"fields": {"diveplan": 1, "dive_id": 3, "depth": 30, "surface_interval": 13, "time": 160}, "model": "Dives.dive", "pk": 27}, {"fields": {"diveplan": 1, "dive_id": 4, "depth": 40, "surface_interval": 13, "time": 200}, "model": "Dives.dive", "pk": 27}];
     Set_Dive(DiveObjects[0].fields.dive_id, DiveObjects[0].fields.time, DiveObjects[0].fields.depth)
     for (i = 1; i < DiveObjects.length; i++){
         Add_Dive();
@@ -396,6 +400,8 @@ function Load_Dive()
 
 function Set_Dive(dive_id, x, y)
 {
+  var x = Math.round(x*4.0909090909);
+  var y = y*10;
   var dive = document.getElementsByClassName("draggable dive");
   var target = document.getElementById(dive_id);
 
@@ -451,8 +457,8 @@ function Set_Dive(dive_id, x, y)
   y = Math.round(y/10);
   
   //show the time = x and depth = y coordinates and status of dive
-  textEl && (textEl.textContent = 'Time = ' + x + '\n' +
-     'Depth = ' + y);
+  textEl && (textEl.textContent = 'Time = ' + x + 'min.' + '\n' +
+     'Depth = ' + y + 'm');
 
   //for a more conservative dive status
   x = x + 1;
