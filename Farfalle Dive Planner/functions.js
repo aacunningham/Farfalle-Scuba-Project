@@ -19,7 +19,7 @@ interact('.draggable')
       //endOnly: true,            //endOnly is used if we want the draggable object to
                                   //automatically move inside the defined bounds in the
                                   //event that it goes out.
-      elementRect: { top: -1, left: 0, bottom: 1, right: 1 } //define the part of the draggable object
+      elementRect: { top: -1.2, left: 0, bottom: 1, right: 1 } //define the part of the draggable object
                                                             //  that can go out of the draggable area.
                                                             //In this case the whole object cannot go out
                                                             //  of the area.
@@ -325,8 +325,8 @@ function Add_Dive()
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var width = $(main).width();
-    $(main).width(width + 950 + 400);
-    $('#sky').width(width + 950 + 400);
+    $(main).width(width + 980 + 500);
+    $('#sky').width(width + 980 + 500);
 
     $(newContainer).append(boat1, newline, newDive);    ///newline = anchor line that uses bordersss
     $(main).append(SurfaceInt, newContainer);
@@ -334,7 +334,7 @@ function Add_Dive()
 	  Set_Dive(newDive.id,0,10,input.value);
     //for automatic scrolling when adding dive
    $('html, body').animate({
-            scrollLeft: width+980+400});
+            scrollLeft: width+980+500});
 }
 
 function Delete_Dive()
@@ -348,8 +348,7 @@ function Delete_Dive()
     $(container[last-1]).remove();
     $(si[last-2]).remove();
     var width = $(main).width();
-    $(main).width(width - 980 - 400);
-    $('#sky').width(width - 980 - 400);
+    $(main).width(width - 980 - 500);
   }
 }
 

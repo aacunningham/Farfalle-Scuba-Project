@@ -61,29 +61,26 @@ of dive
     float: left; 
     overflow: visible;
     top: 100px;
-    background-color: transparent;
-	  
+    background-color: transparent; 
   }
 
 #main {
-  width: 99%;
-  height: 80%;
+  width: 980px;
   position: absolute;
-  margin-top:-20px;
   overflow: visible;
+  top: 180px;
  
-  top: 145px;
-  background-image: url("background.png");
+  
+  
 }
 
 .SI {
   float:left;
   width: 400px;  
-  height: 500px;
   position:relative;
-  margin-left: 50px;
+  top: -5px;
+  padding-left: 100px;
 
-  background-image: url("background.png")
 }
 
 #confirm {
@@ -203,15 +200,11 @@ text-align:center;
   z-index: 1;
 }
 
-body{
-}
-
 #sky {
   background-image: url("sky.png");
-  width: 99%;
+  width: 100%;
   height: 180px;
-  position: absolute;
-  top: 0px;
+  position: fixed;
   z-index: -1;
 }
 
@@ -224,4 +217,10 @@ body{
   right: 50px;
   top: -10px;
   color: #FF6600;
+ }
+
+ body {
+  background-image: url("background.png");
+  position: absolute;
+  top: -60px;
  }
