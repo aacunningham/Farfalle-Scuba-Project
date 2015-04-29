@@ -67,14 +67,7 @@ interact('.draggable')
       //boat graphics
       var boat2 = document.getElementsByClassName("boat2");
       $(boat2[target.id-1]).css('left',x+75+"px");
-      ///////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-      //For hiding the depth time label
-      //Ths line just nulls the depth_time_txt:before in css
-      var p = document.getElementsByClassName("depth_time_txt");
-      $(p[target.id-1]).addClass('no-before'); //removing the before pseudo content of <p>
+      ////////////////////////////////////////////////////////////////////////////////////////
 
 
       //minimize the coordinates by diving by 10
@@ -137,29 +130,29 @@ function Dive_Status(i,x,y)
       if(Bad_DIVE(x,y))
       {
         //change to represent the bad dive.
-        dive[i].style.backgroundColor='red';
-		    dive[i].style.borderColor='red';
-        dive[i].style.backgroundImage="url('diver.png')";
+        dive[i].style.backgroundColor='#FF3333';
+		    dive[i].style.borderColor='#FF3333';
+        dive[i].style.backgroundImage="url('diver3.png')";
 
         ///////////////////////////////////////////////////////////////////
-        line[i].style.borderColor='red';
-        line2[i].style.borderRightColor='red';
-        decomp_stop[i].style.borderRightColor='red';
-        decomp_stop[i].style.borderBottomColor='red';
+        line[i].style.borderColor='#FF3333';
+        line2[i].style.borderRightColor='#FF3333';
+        decomp_stop[i].style.borderRightColor='#FF3333';
+        decomp_stop[i].style.borderBottomColor='#FF3333';
         ///////////////////////////////////////////////////////////////////
       }
       else if(Warning_DIVE(x,y))
       {
          //change to represent the warning dive
-         dive[i].style.backgroundColor='orange';
-		 dive[i].style.borderColor='orange';
-         dive[i].style.backgroundImage="url('diver.png')";
+         dive[i].style.backgroundColor='#FFCC00';
+		     dive[i].style.borderColor='#FFCC00';
+         dive[i].style.backgroundImage="url('diver2.png')";
 
          //////////////////////////////////////////////////////////////////
-         line[i].style.borderColor='orange';
-         line2[i].style.borderRightColor='orange';
-         decomp_stop[i].style.borderRightColor='orange';
-         decomp_stop[i].style.borderBottomColor='orange';
+         line[i].style.borderColor='#FFCC00';
+         line2[i].style.borderRightColor='#FFCC00';
+         decomp_stop[i].style.borderRightColor='#FFCC00';
+         decomp_stop[i].style.borderBottomColor='#FFCC00';
          /////////////////////////////////////////////////////////////////
       }
       else
@@ -167,7 +160,7 @@ function Dive_Status(i,x,y)
           //change to represent the good dive
           dive[i].style.backgroundColor='#339933';
 		  dive[i].style.borderColor='#339933';
-          dive[i].style.backgroundImage="url('diver.png')";
+          dive[i].style.backgroundImage="url('diver1.png')";
 
           ////////////////////////////////////////////////////////////////
           line[i].style.borderColor='#339933';
@@ -299,6 +292,7 @@ function Add_Dive()
     var confirm = document.createElement("button");
     var t = document.createTextNode("Confirm");
     SurfaceInt.className = "SI";
+    label.className = "SItxt";
 
     input.className = "surface_interval";
     input.value = 60;
@@ -331,16 +325,16 @@ function Add_Dive()
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var width = $(main).width();
-    $(main).width(width + 1000 + 500);
-    $('#sky').width(width + 1000 + 500);
+    $(main).width(width + 950 + 400);
+    $('#sky').width(width + 950 + 400);
 
     $(newContainer).append(boat1, newline, newDive);    ///newline = anchor line that uses bordersss
     $(main).append(SurfaceInt, newContainer);
     
-	 Set_Dive(newDive.id,0,10);
+	  Set_Dive(newDive.id,0,10,input.value);
     //for automatic scrolling when adding dive
    $('html, body').animate({
-            scrollLeft: width+1000+500});
+            scrollLeft: width+980+400});
 }
 
 function Delete_Dive()
@@ -354,8 +348,8 @@ function Delete_Dive()
     $(container[last-1]).remove();
     $(si[last-2]).remove();
     var width = $(main).width();
-    $(main).width(width - 1000 - 500);
-    $('#sky').width(width - 1000 - 500);
+    $(main).width(width - 980 - 400);
+    $('#sky').width(width - 980 - 400);
   }
 }
 
@@ -389,16 +383,16 @@ function Update(curr)
 function Load_Dive()
 {
     var DiveObjects = [{"fields": {"diveplan": 1, "dive_id": 1, "depth": 10, "surface_interval": 6, "time": 40}, "model": "Dives.dive", "pk": 26}, {"fields": {"diveplan": 1, "dive_id": 2, "depth": 20, "surface_interval": 13, "time": 100}, "model": "Dives.dive", "pk": 27}, {"fields": {"diveplan": 1, "dive_id": 3, "depth": 30, "surface_interval": 13, "time": 160}, "model": "Dives.dive", "pk": 27}, {"fields": {"diveplan": 1, "dive_id": 4, "depth": 40, "surface_interval": 13, "time": 200}, "model": "Dives.dive", "pk": 27}];
-    Set_Dive(DiveObjects[0].fields.dive_id, DiveObjects[0].fields.time, DiveObjects[0].fields.depth)
+    Set_Dive(DiveObjects[0].fields.dive_id, DiveObjects[0].fields.time, DiveObjects[0].fields.depth, DiveObjects[0].fields.surface_interval);
     for (i = 1; i < DiveObjects.length; i++){
         Add_Dive();
-        Set_Dive(DiveObjects[i].fields.dive_id, DiveObjects[i].fields.time, DiveObjects[i].fields.depth)
+        Set_Dive(DiveObjects[i].fields.dive_id, DiveObjects[i].fields.time, DiveObjects[i].fields.depth, DiveObjects[i].fields.surface_interval)
     }
 
 }
 
 
-function Set_Dive(dive_id, x, y)
+function Set_Dive(dive_id, x, y,si)
 {
   var x = Math.round(x*4.0909090909);
   var y = y*10;
@@ -439,14 +433,7 @@ function Set_Dive(dive_id, x, y)
   //boat graphics
   var boat2 = document.getElementsByClassName("boat2");
   $(boat2[target.id-1]).css('left',x+75+"px");
-  ///////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-  //For hiding the depth time label
-  //Ths line just nulls the depth_time_txt:before in css
-  var p = document.getElementsByClassName("depth_time_txt");
-  $(p[target.id-1]).addClass('no-before'); //removing the before pseudo content of <p>
+  ///////////////////////////////////////////////////////////////////////////////////////////////  
 
 
   //minimize the coordinates by diving by 10
@@ -483,6 +470,11 @@ function Set_Dive(dive_id, x, y)
       var surfaceInt = document.getElementsByClassName("surface_interval");
       //reduce pressure group after surface interval
       //Not sure about this:*********************************************************************************************************
+
+      var label = document.getElementsByClassName("SItxt");
+      surfaceInt[target.id-2].value = si;
+      label[target.id-2].innerHTML = "Surface Interval: " + surfaceInt[target.id-2].value + "min.";
+
       var PGafterSI = Reduce_PG(previousPG, surfaceInt[target.id-2].value); //surfaceInt[this]
       x = x + RNT(PGafterSI,y);
       dive[target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));        //dive[this]

@@ -15,7 +15,7 @@ of dive
   color: white;
   border-radius: 10em;
   border-style: solid;
-  border-width: 9px;
+  border-width: 1px;
   z-index: 1;
 
   -webkit-transform: translate(0px, 0px);
@@ -26,10 +26,10 @@ of dive
 #time_depth{
   width: 170px;
   height: 80px;
-  top: 10px;
+  top: 5px;
   background-color: black;
   position: relative;
-  left: 120px;
+  left: 95px;
   text-align: left; 
   font-family: Arial, Helvetica, sans-serif; 
   -moz-border-radius:    10px;
@@ -56,8 +56,8 @@ of dive
 
 
 .container {
-    width: 1000px;
-    height: 520px;  
+    width: 980px;
+    height: 500px;  
     float: left; 
     overflow: visible;
     top: 100px;
@@ -78,9 +78,10 @@ of dive
 
 .SI {
   float:left;
-  width: 500px;  
-  height: 520px;
+  width: 400px;  
+  height: 500px;
   position:relative;
+  margin-left: 50px;
 
   background-image: url("background.png")
 }
@@ -89,7 +90,7 @@ of dive
   position: absolute;
   width: 70px;
   height: 26px;
-  left: 51%;
+  left: 50%;
 }
 
 .surface_interval {
@@ -98,12 +99,12 @@ of dive
   position: absolute;
   left:40%;
 }
-h2 {
+.SItxt {
 text-decoration:underline;
 text-align:center;
 }
 
-h2:hover {
+.SItxt:hover {
   cursor: pointer;
 }
 
@@ -136,14 +137,6 @@ h2:hover {
   width:100px;
   left: 300px;
   top: 5px;
-}
-
-.depth_time_txt:before {
-  content: "Time = 0 Depth = 0"; 
-}
-
-.depth_time_txt.no-before:before {
-  content: none;
 }
 
 .boat1 {
@@ -226,9 +219,9 @@ body{
   font-family: Arial, Helvetica, sans-serif; 
   text-align: right;
   width: 390px;
-  font-size: 19pt;
+  font-size: 18pt;
   position: fixed;
   right: 50px;
-  top: 0px;
+  top: -10px;
   color: #FF6600;
  }
