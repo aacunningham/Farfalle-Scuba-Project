@@ -11,6 +11,7 @@ interact('.draggable')
   .draggable(
   {
       autoScroll: true,
+      inertia: true,
     // keep the element within the area of it's parent
     //restrict the draggable object inside another object(image)
     restrict: {
@@ -18,7 +19,7 @@ interact('.draggable')
       //endOnly: true,            //endOnly is used if we want the draggable object to
                                   //automatically move inside the defined bounds in the
                                   //event that it goes out.
-      elementRect: { top: -1, left: -0.4, bottom: 1, right: 1 } //define the part of the draggable object
+      elementRect: { top: -1.2, left: 0, bottom: 1, right: 1 } //define the part of the draggable object
                                                             //  that can go out of the draggable area.
                                                             //In this case the whole object cannot go out
                                                             //  of the area.
@@ -66,14 +67,7 @@ interact('.draggable')
       //boat graphics
       var boat2 = document.getElementsByClassName("boat2");
       $(boat2[target.id-1]).css('left',x+75+"px");
-      ///////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-      //For hiding the depth time label
-      //Ths line just nulls the depth_time_txt:before in css
-      var p = document.getElementsByClassName("depth_time_txt");
-      $(p[target.id-1]).addClass('no-before'); //removing the before pseudo content of <p>
+      ////////////////////////////////////////////////////////////////////////////////////////
 
 
       //minimize the coordinates by diving by 10
@@ -84,8 +78,8 @@ interact('.draggable')
       y = Math.round(y/10);
       
       //show the time = x and depth = y coordinates and status of dive
-      textEl && (textEl.textContent = 'Time = ' + x + '\n' +
-         'Depth = ' + y);
+      textEl && (textEl.textContent = 'Time = ' + x + 'min.' + '\n' +
+         'Depth = ' + y + 'm');
 
       //for a more conservative dive status
       x = x + 1;
@@ -136,34 +130,37 @@ function Dive_Status(i,x,y)
       if(Bad_DIVE(x,y))
       {
         //change to represent the bad dive.
-        dive[i].style.backgroundColor='#CC3300';
-        dive[i].style.backgroundImage="url('static/diver-octopus.gif')";
+        dive[i].style.backgroundColor='#FF3333';
+		    dive[i].style.borderColor='#FF3333';
+        dive[i].style.backgroundImage="url('static/diver3.png')";
 
         ///////////////////////////////////////////////////////////////////
-        line[i].style.borderColor='#CC3300';
-        line2[i].style.borderRightColor='#CC3300';
-        decomp_stop[i].style.borderRightColor='#CC3300';
-        decomp_stop[i].style.borderBottomColor='#CC3300';
+        line[i].style.borderColor='#FF3333';
+        line2[i].style.borderRightColor='#FF3333';
+        decomp_stop[i].style.borderRightColor='#FF3333';
+        decomp_stop[i].style.borderBottomColor='#FF3333';
         ///////////////////////////////////////////////////////////////////
       }
       else if(Warning_DIVE(x,y))
       {
          //change to represent the warning dive
-         dive[i].style.backgroundColor='#CC6600';
-         dive[i].style.backgroundImage="url('static/animated-diver-2.gif')";
+         dive[i].style.backgroundColor='#FFCC00';
+		     dive[i].style.borderColor='#FFCC00';
+         dive[i].style.backgroundImage="url('static/diver2.png')";
 
          //////////////////////////////////////////////////////////////////
-         line[i].style.borderColor='#CC6600';
-         line2[i].style.borderRightColor='#CC6600';
-         decomp_stop[i].style.borderRightColor='#CC6600';
-         decomp_stop[i].style.borderBottomColor='#CC6600';
+         line[i].style.borderColor='#FFCC00';
+         line2[i].style.borderRightColor='#FFCC00';
+         decomp_stop[i].style.borderRightColor='#FFCC00';
+         decomp_stop[i].style.borderBottomColor='#FFCC00';
          /////////////////////////////////////////////////////////////////
       }
       else
         {
           //change to represent the good dive
           dive[i].style.backgroundColor='#339933';
-          dive[i].style.backgroundImage="url('static/animated-diver-2.gif')";
+		  dive[i].style.borderColor='#339933';
+          dive[i].style.backgroundImage="url('static/diver1.png')";
 
           ////////////////////////////////////////////////////////////////
           line[i].style.borderColor='#339933';
@@ -272,6 +269,7 @@ function Add_Dive()
     var newline = document.createElement("div");                        //create new dynamic anchor line
     var newline2 = document.createElement("div");
     var newdecomp_stop = document.createElement("div");
+    newdecomp_stop.innerHTML = '<h3>Time: 3min. Depth: 5m</h3>';
 
     newline.className = "line"; //set the class of the anchor line
     newline2.className = "line2"
@@ -282,12 +280,12 @@ function Add_Dive()
     var boat2 = document.createElement("div");
     boat1.className = "boat1";
     boat2.className = "boat2";
+
     $(newline).append(newline2,boat2,newdecomp_stop);          //add decomp_stop to line
     ////////////////////////////////////////////////////////////////////////////////////////////
 
 
     //***************************Temporary Surface interval interface*******************************
-    var SurfaceID  = document.getElementsByClassName("SI")
     var SurfaceInt = document.createElement("input")
     
     var SurfaceInt = document.createElement("div");
@@ -296,33 +294,30 @@ function Add_Dive()
     var confirm = document.createElement("button");
     var t = document.createTextNode("Confirm");
     SurfaceInt.className = "SI";
-    SurfaceInt.id = "SI" + (SurfaceID.length + 1);
+    label.className = "SItxt";
 
     input.className = "surface_interval";
     input.value = 60;
     input.setAttribute("data-rpg", "1");
-    input.type = "text";
+    input.type = "number";
     input.style.display = 'none';
-
-    SurfaceInt.setAttribute("data-value", input.value);
 
 
     confirm.id = "confirm";
     $(confirm).append(t);
     confirm.style.display = 'none';
-    label.innerHTML = "Surface Interval: " + input.value + "min";
+    label.innerHTML = "Surface Interval: " + input.value + "min.";
 
     label.onclick = function() { input.style.display = 'block';
                                  confirm.style.display = 'block'; }
 
     confirm.onclick = function() {  if(input.value<=0)
-                                    {alert("Surface Interval cannot be 0min");}
+                                    {alert("Surface Interval cannot be 0min.");}
                                     else
                                     {
                                       input.style.display = 'none';
                                       confirm.style.display = 'none'; 
-                                      label.innerHTML = "Surface Interval: " + input.value + "min";
-                                      SurfaceInt.setAttribute("data-value", input.value);
+                                      label.innerHTML = "Surface Interval: " + input.value + "min.";
                                       Update(newDive.id-1);
                                     }
                                   }
@@ -332,15 +327,16 @@ function Add_Dive()
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var width = $(main).width();
-    $(main).width(width + 1000 + 500);
+    $(main).width(width + 980 + 500);
+    $('#sky').width(width + 980 + 500);
 
     $(newContainer).append(boat1, newline, newDive);    ///newline = anchor line that uses bordersss
     $(main).append(SurfaceInt, newContainer);
     
-
+	  Set_Dive(newDive.id,0,10,input.value);
     //for automatic scrolling when adding dive
    $('html, body').animate({
-            scrollLeft: width+1000+500});
+            scrollLeft: width+980+500});
 }
 
 function Delete_Dive()
@@ -354,8 +350,7 @@ function Delete_Dive()
     $(container[last-1]).remove();
     $(si[last-2]).remove();
     var width = $(main).width();
-    $(main).width(width - 1000 - 500);
-
+    $(main).width(width - 980 - 500);
   }
 }
 
@@ -386,64 +381,22 @@ function Update(curr)
   }
 }
 
-function Save_Dive()
+function Load_Dive()
 {
-    var DiveObjects = [];
-    DiveObjects[0] = 1;
-    var numberOfDives = document.getElementsByClassName("draggable dive");
-    console.log(numberOfDives.length);
-    console.log(numberOfDives[0].getAttribute('data-x'));
-    for (i = 0; i < numberOfDives.length; i++) {
-        var x = numberOfDives[i].getAttribute('data-x');
-        var y = numberOfDives[i].getAttribute('data-y');
-        x = Math.round(x * 10) / 10;
-        y = Math.round(y * 10) / 10;
-        z = 0;
-        if (i > 0) {
-            si = document.getElementById("SI" + i);
-            z  = si.getAttribute("data-value");
-        }
-        DiveObjects[i+1] = {fields: {dive_id: i+1, time: x, depth: y, surface_interval: z}};
-    }
-    $.get("dives/saveDive", {json: JSON.stringify(DiveObjects)}, function (data) {
-        alert(data);
-    });
-}
-
-function Request_Dive(diveplan_ID)
-{
-    $.get("dives/requestDive", {pk: diveplan_ID}, function (data) {
-        Clear_Dive();
-        Load_Dive(data);
-    }, "json");
-}
-
-function Clear_Dive()
-{
-    var numberOfDives = document.getElementsByClassName("draggable dive");
-    for (i = 0; i < numberOfDives.length; i++){
-        Delete_Dive();
-    }
-}
-
-function Load_Dive(DiveObjects)
-{
-    Set_Dive(DiveObjects[0].fields.dive_id, DiveObjects[0].fields.time, DiveObjects[0].fields.depth, 0);
+    var DiveObjects = [{"fields": {"diveplan": 1, "dive_id": 1, "depth": 10, "surface_interval": 6, "time": 40}, "model": "Dives.dive", "pk": 26}, {"fields": {"diveplan": 1, "dive_id": 2, "depth": 20, "surface_interval": 13, "time": 100}, "model": "Dives.dive", "pk": 27}, {"fields": {"diveplan": 1, "dive_id": 3, "depth": 30, "surface_interval": 13, "time": 160}, "model": "Dives.dive", "pk": 27}, {"fields": {"diveplan": 1, "dive_id": 4, "depth": 40, "surface_interval": 13, "time": 200}, "model": "Dives.dive", "pk": 27}];
+    Set_Dive(DiveObjects[0].fields.dive_id, DiveObjects[0].fields.time, DiveObjects[0].fields.depth, DiveObjects[0].fields.surface_interval);
     for (i = 1; i < DiveObjects.length; i++){
         Add_Dive();
-        Set_Dive(DiveObjects[i].fields.dive_id, DiveObjects[i].fields.time, DiveObjects[i].fields.depth, DiveObjects[i].fields.surface_interval);
+        Set_Dive(DiveObjects[i].fields.dive_id, DiveObjects[i].fields.time, DiveObjects[i].fields.depth, DiveObjects[i].fields.surface_interval)
     }
 
 }
 
-function Set_Dive(dive_id, x, y, z)
-{
-  if (dive_id > 1) {
-      si = document.getElementById("SI" + (dive_id-1));
-      si.setAttribute("data-value", z);
-      si.firstChild.innerHTML = "Surface Interval: " + z + "min";
-  }
 
+function Set_Dive(dive_id, x, y,si)
+{
+  var x = Math.round(x*4.0909090909);
+  var y = y*10;
   var dive = document.getElementsByClassName("draggable dive");
   var target = document.getElementById(dive_id);
 
@@ -481,14 +434,7 @@ function Set_Dive(dive_id, x, y, z)
   //boat graphics
   var boat2 = document.getElementsByClassName("boat2");
   $(boat2[target.id-1]).css('left',x+75+"px");
-  ///////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-  //For hiding the depth time label
-  //Ths line just nulls the depth_time_txt:before in css
-  var p = document.getElementsByClassName("depth_time_txt");
-  $(p[target.id-1]).addClass('no-before'); //removing the before pseudo content of <p>
+  ///////////////////////////////////////////////////////////////////////////////////////////////  
 
 
   //minimize the coordinates by diving by 10
@@ -499,8 +445,8 @@ function Set_Dive(dive_id, x, y, z)
   y = Math.round(y/10);
   
   //show the time = x and depth = y coordinates and status of dive
-  textEl && (textEl.textContent = 'Time = ' + x + '\n' +
-     'Depth = ' + y);
+  textEl && (textEl.textContent = 'Time = ' + x + 'min.' + '\n' +
+     'Depth = ' + y + 'm');
 
   //for a more conservative dive status
   x = x + 1;
@@ -525,6 +471,11 @@ function Set_Dive(dive_id, x, y, z)
       var surfaceInt = document.getElementsByClassName("surface_interval");
       //reduce pressure group after surface interval
       //Not sure about this:*********************************************************************************************************
+
+      var label = document.getElementsByClassName("SItxt");
+      surfaceInt[target.id-2].value = si;
+      label[target.id-2].innerHTML = "Surface Interval: " + surfaceInt[target.id-2].value + "min.";
+
       var PGafterSI = Reduce_PG(previousPG, surfaceInt[target.id-2].value); //surfaceInt[this]
       x = x + RNT(PGafterSI,y);
       dive[target.id-1].setAttribute("data-pg",Pressure_GROUP(x,y));        //dive[this]

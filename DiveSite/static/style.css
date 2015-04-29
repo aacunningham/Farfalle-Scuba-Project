@@ -7,14 +7,15 @@ of dive
 */
 
 .dive {
-  width: 100px;
-  height:100px;
-  background-color:#339933; 
+  width: 80px;
+  height:80px;
 
-  background-image: url("animated-diver-2.gif");
+  background-image: url("diver1.png");
   position: absolute;
   color: white;
   border-radius: 10em;
+  border-style: solid;
+  border-width: 1px;
   z-index: 1;
 
   -webkit-transform: translate(0px, 0px);
@@ -23,18 +24,18 @@ of dive
 
 
 #time_depth{
-  width: 110px;
+  width: 170px;
   height: 80px;
-  top: 10px;
+  top: 5px;
   background-color: black;
   position: relative;
-  left: 120px;
+  left: 95px;
   text-align: left; 
   font-family: Arial, Helvetica, sans-serif; 
   -moz-border-radius:    10px;
    -webkit-border-radius: 10px;
    border-radius:         10px;
-   text-align: center;
+   text-align: left;
    font-size: 120%;
    font-weight: bolder;
    display: inline-block;
@@ -55,47 +56,52 @@ of dive
 
 
 .container {
-    width: 1000px;
-    height: 520px;  
-    
+    width: 980px;
+    height: 500px;  
     float: left; 
     overflow: visible;
     top: 100px;
+    background-color: transparent; 
   }
 
 #main {
-  width: 1000px;
-  position: relative;
-  margin-top:100px;
+  width: 980px;
+  position: absolute;
   overflow: visible;
-  background-color: #336699;
-  padding-left: 150px;
+  top: 180px;
+ 
   
-  top:100px;
+  
 }
 
 .SI {
   float:left;
-  width: 500px;  
-  height: 520px;
+  width: 400px;  
   position:relative;
-  top: -50px;
+  top: -5px;
+  padding-left: 100px;
+
 }
 
 #confirm {
-  position: inherit;
+  position: absolute;
+  width: 70px;
+  height: 26px;
+  left: 50%;
 }
 
 .surface_interval {
   width: 50px;
-  float: center;
+  height: 20px;
+  position: absolute;
+  left:40%;
 }
-h2 {
+.SItxt {
 text-decoration:underline;
 text-align:center;
 }
 
-h2:hover {
+.SItxt:hover {
   cursor: pointer;
 }
 
@@ -105,46 +111,50 @@ h2:hover {
 
 #add {
   position: fixed;
-  margin-left: 1500px;
-  margin-top: -90px;
-  height:50px;
-  width:50px;
+  width:100px;
+  top: 5px;
 }
 
 #delete {
    position: fixed;
-   margin-left: 1500px;
-   margin-top: -40px;
-   height:50px;
-   width:50px;
+   width:100px;
+   left: 100px;
+   top: 5px;
 }
 
-.depth_time_txt:before {
-  content: "Time = 0 Depth = 0"; 
+#load {
+  position: fixed;
+  width:100px;
+  left: 200px;
+  top: 5px;
 }
 
-.depth_time_txt.no-before:before {
-  content: none;
+#setdive {
+  position: fixed;
+  width:100px;
+  left: 300px;
+  top: 5px;
 }
 
 .boat1 {
   position: absolute;
-  top: -90px;
-  width: 100px;
-  height: 100px;
-  z-index: 1;
-  background-color: black;
+  top: -40px;
+  width: 157px;
+  height: 60px;
+  z-index: 2;
+  background-color: transparent;
+  background-image: url("boat.png");
 }
 
 .boat2 {
   position: absolute;
-  top: -80px;
-  width: 100px;
-  height: 100px;
-  z-index: 1;
+  top: -30px;
+  width: 157px;
+  height: 60px;
+  z-index: 2;
   left: 250px;
-  background-color: black;
-  left: 50px;
+  background-color: transparent;
+  background-image: url("boat.png");
 }
 
 
@@ -159,6 +169,7 @@ h2:hover {
   border-radius: 10px;
   top:-20px;
   margin-left: 50px;
+  z-index: 1;
 }
 
 .line2 {
@@ -172,10 +183,11 @@ h2:hover {
   border-top-color: transparent;
   border-left-color: transparent;
   border-bottom-color: transparent;
+  z-index: 1;
 }
 
 .decomp_stop {
-  width: 50px;
+  width: 80px;
   height: 70px;
   position: absolute;
   background-color: transparent;
@@ -185,7 +197,43 @@ h2:hover {
   border-top-color: transparent;
   border-left-color: transparent;
   top: -10px;
+  z-index: 1;
 }
 
-body{
-background-image: url("background.png");}
+#sky {
+  background-image: url("sky.png");
+  width: 100%;
+  height: 180px;
+  left: 0px;
+  position: fixed;
+  z-index: -1;
+}
+
+#warning {
+  font-family: Arial, Helvetica, sans-serif; 
+  text-align: right;
+  width: 390px;
+  font-size: 18pt;
+  position: fixed;
+  right: 50px;
+  top: -10px;
+  color: #FF6600;
+ }
+
+ body {
+  background-image: url("background.png");
+  position: absolute;
+  top: -60px;
+  z-index: -2;
+ }
+
+ h3 {
+  width: 100px;
+  position: relative;
+  top: 20px;
+  left: -10px;
+  font-color: white;
+  font-family: Arial, Helvetica, sans-serif; 
+  color: white;
+  font-size: 12pt;
+ }

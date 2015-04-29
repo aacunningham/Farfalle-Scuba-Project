@@ -5,28 +5,31 @@
         <link rel="stylesheet" type="text/css" href="{% static "style.css" %}">
         <script src="{% static "interact.js" %}"></script>
         <script src="{% static "functions.js" %}"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="{% static "jquery-1.11.2.min.js" %}"></script>
         <title>Farfalle</title>
 	</head>
 
 	<body>
-		<button onclick="Add_Dive()">Add Dive</button>
-		<button onclick="Delete_Dive()">Delete Dive</button>
-        <button onclick="Request_Dive(1)">Load Dive</button>
-        <button onclick="Save_Dive()">Save Dive</button>
-		<div id="main" align ="center">
+		<button id="add" onclick="Add_Dive()">Add Dive</button>
+		<button id="delete" onclick="Delete_Dive()">Delete Dive</button>
+        <button id="load" onclick="Load_Dive()">Load Dive</button>
+        <button id="setdive" onclick="Set_Dive('1', 40, 10)">Set Dive 1</button>
+        <div id="sky"></div>
+        <h1 id="warning">Warning: This SCUBA dive planner is still a prototype. It cannot be used in actual dive planning.</h1>
+		<div id="main">
 			<div class="container" align ="left">
 				<div class="boat1"></div>
 				<div class="line">
 					<div class="line2"></div>
 					<div class="boat2"></div>
-					<div class="decomp_stop"></div>
+					<div class="decomp_stop"><h3>Time: 3min. Depth: 5m</h3></div>
 				</div>
 				<div id="1" class="draggable dive" data-pg="1">
 					<div id="time_depth">
 						<strong><p class="depth_time_txt"></p></strong>
 					</div>
 				</div>
+				<script>Set_Dive('1',0,10,0)</script>
 			</div>
 		</div>
 	</body>
